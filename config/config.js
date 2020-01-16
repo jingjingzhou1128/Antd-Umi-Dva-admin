@@ -1,19 +1,13 @@
+import routes from './route.config'
 
 // ref: https://umijs.org/config/
 export default {
   base: '/',
+  publicPath: '/',
   history: 'hash',
   outputPath: './dist',
   treeShaking: true,
-  routes: [
-    {
-      path: '/',
-      component: '../layouts/index',
-      routes: [
-        { path: '/', component: '../pages/index' }
-      ]
-    }
-  ],
+  routes,
   plugins: [
     // ref: https://umijs.org/plugin/umi-plugin-react.html
     ['umi-plugin-react', {
@@ -36,5 +30,11 @@ export default {
         ],
       },
     }],
+  ],
+  alias: {
+    '@': require('path').resolve(__dirname, 'src'),
+  },
+  extraBabelPlugins:[
+    ['import', { libraryName: 'antd-mobile', style: true }]  //按需加载antd-mobile样式文件
   ],
 }
