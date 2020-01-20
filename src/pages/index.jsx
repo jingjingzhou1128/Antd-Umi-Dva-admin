@@ -1,5 +1,7 @@
-import styles from './index.css';
-import { formatMessage } from 'umi-plugin-locale';
+import React from 'react'
+import styles from './index.css'
+import {formatMessage} from 'umi-plugin-locale'
+
 export default function() {
   return (
     <div className={styles.normal}>
@@ -13,5 +15,5 @@ export default function() {
         </li>
       </ul>
     </div>
-  );
+  )
 }
