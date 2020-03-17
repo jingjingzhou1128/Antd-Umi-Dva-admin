@@ -41,35 +41,6 @@ function BasicLayout({app, dispatch, children, location}) {
     }
   }
 
-  // function getPermissionMenu (menus) {
-  //   const roles = sessionStorage.getItem('role')
-  //   let filterMenus = []
-  //   for (let index in menus) {
-  //     if (menus[index].hidden || menus[index].meta && menus[index].meta.roleKey && menus[index].meta.roleKey.indexOf(Number(roles)) < 0) {
-  //       continue
-  //     }
-  //     if (menus[index].showSub && menus[index].routes) {
-  //       filterMenus.push(...getPermissionMenu(menus[index].routes))
-  //       continue
-  //     }
-  //     if (menus[index].rootShow) {
-  //       let tmpMenu = {...menus[index]}
-  //       delete tmpMenu.routes
-  //       filterMenus.push(tmpMenu)
-  //       continue
-  //     }
-  //     if (menus[index].routes) {
-  //       filterMenus.push({
-  //         ...menus[index],
-  //         routes: getPermissionMenu(menus[index].routes)
-  //       })
-  //     } else {
-  //       filterMenus.push(menus[index])
-  //     }
-  //   }
-  //   return filterMenus
-  // }
-
   const [menus, setMenus] = useState([])
 
   const prevPathRef = useRef()
@@ -123,28 +94,16 @@ function BasicLayout({app, dispatch, children, location}) {
       } else {
         try {
           let prmCodeList = await userAjax.getPrmCode({username: sessionStorage.getItem('username')})
-          window.prmCodeList = prmCodeList.data.result
-          setMenus(getPermissionMenu(routes, prmCodeList.data.result))
+          if (prmCodeList.data.flag) {
+            window.prmCodeList = prmCodeList.data.result
+            setMenus(getPermissionMenu(routes, prmCodeList.data.result))
+          }
         } catch (e) {
           console.log(e)
         }
       }
     }
     getPrmCodeList()
-    // if (window.prmCodeList) {
-    //   setMenus(getPermissionMenu(routes, window.prmCodeList))
-    // } else {
-    //   let codes = getPrmCodeList()
-    //   console.log(codes)
-    //   window.prmCodeList = codes
-    //   setMenus(getPermissionMenu(routes, codes))
-    // }
-    // userAjax.getPrmCode({username: sessionStorage.getItem('username')}).then(res => {
-    //   if (res.data.flag) {
-    //     let prmCodeList = res.data.result
-    //     setMenus(getPermissionMenu(routes, prmCodeList))
-    //   }
-    // }).catch((error) => {console.log(error)})
     setIsInit(false)
   }, [])
 

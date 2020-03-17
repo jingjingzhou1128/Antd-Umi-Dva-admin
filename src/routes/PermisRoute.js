@@ -3,7 +3,7 @@ import {Redirect} from 'react-router-dom'
 
 import userAjax from '@/services/user'
 
-function PermisRoute ({children, route}) {
+function PermisRoute ({children, route, location}) {
   const [hasPermis, setHasPermis] = useState(false)
   const [isLoad, setIsLoad] = useState(true)
   const [isLogin, setIsLogin] = useState(true)
@@ -13,6 +13,15 @@ function PermisRoute ({children, route}) {
     if (!username) {
       setIsLogin(false)
       setIsLoad(false)
+    } else if (location.pathname === '/home/dashboard') {
+      window.prmCodeList = null
+      userAjax.getPrmCode({username}).then(res => {
+        if (res.data.flag) {
+          window.prmCodeList = res.data.result
+          setHasPermis(true)
+          setIsLoad(false)
+        }
+      }).catch(() => {})
     } else if (!route.meta.prmCode) {
       setHasPermis(true)
       setIsLoad(false)
@@ -40,7 +49,7 @@ function PermisRoute ({children, route}) {
         })
       }
     }
-  }, [route.meta.prmCode])
+  }, [route.meta.prmCode, location.pathname])
 
   return (
     isLoad ?
