@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
+// Skeleton
 import {Row, Col, Tooltip, Progress} from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
-// import echarts from 'echarts/lib/echarts'
 
 import ajax from './service'
 
@@ -161,6 +161,7 @@ function Dashboard (props) {
       }
     }
   })
+  // const [summaryLoad, setSummaryLoad] = useState(true)
 
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
@@ -173,6 +174,7 @@ function Dashboard (props) {
     barChartIns.setOption(barOption)
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
+        // setSummaryLoad(false)
         lineChartIns.setOption({
           xAxis: {
             data: res.data.result.visit.category
@@ -211,6 +213,7 @@ function Dashboard (props) {
       <Row gutter={16}>
         <Col span={6} className="summary-item">
           <div className="inner">
+            {/* <Skeleton loading={summaryLoad} active> */}
             <div className="header">
               <p className="title">总销售额</p>
               <div className="btn-group">
@@ -229,10 +232,12 @@ function Dashboard (props) {
               </span>
             </div>
             <div className="bottom">日销售额￥{window.toThousandFilter(summaryData.sales.dayTotal, 0)}</div>
+            {/* </Skeleton> */}
           </div>
         </Col>
         <Col span={6} className="summary-item">
           <div className="inner">
+            {/* <Skeleton loading={summaryLoad} active> */}
             <div className="header">
               <p className="title">访问量</p>
               <div className="btn-group">
@@ -246,6 +251,7 @@ function Dashboard (props) {
               <div id="visitChart" className="chart"></div>
             </div>
             <div className="bottom">日访问量 {window.toThousandFilter(summaryData.visit.dayTotal, 0)}</div>
+            {/* </Skeleton> */}
           </div>
         </Col>
         <Col span={6} className="summary-item">
