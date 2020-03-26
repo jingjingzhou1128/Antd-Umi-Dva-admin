@@ -53,7 +53,7 @@ function PermisRoute ({children, route, location}) {
 
   return (
     isLoad ?
-      <div>Loading</div> :
+      null :
       (
         !isLogin ?
           <Redirect to="/login"/> :
