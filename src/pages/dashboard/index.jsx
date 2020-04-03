@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 // Skeleton
-import {Row, Col, Tooltip, Progress} from 'antd'
+import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker} from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
 
 import ajax from './service'
@@ -8,6 +8,9 @@ import ajax from './service'
 import './index.scss'
 
 const echarts = require('echarts')
+
+const {TabPane} = Tabs
+const {RangePicker} = DatePicker
 
 const lineOption = {
   tooltip: {
@@ -161,20 +164,23 @@ function Dashboard (props) {
       }
     }
   })
-  // const [summaryLoad, setSummaryLoad] = useState(true)
+  const [isLoad, setIsLoad] = useState(true)
 
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
-    let lineChartIns = echarts.init(document.getElementById('visitChart'))
-    // 绘制图表
-    lineChartIns.setOption(lineOption)
-    // 基于准备好的dom，初始化echarts实例
-    let barChartIns = echarts.init(document.getElementById('payChart'))
-    // 绘制图表
-    barChartIns.setOption(barOption)
+    let lineChartIns, barChartIns
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
-        // setSummaryLoad(false)
+        setIsLoad(false)
+        // 基于准备好的dom，初始化echarts实例
+        lineChartIns = echarts.init(document.getElementById('visitChart'))
+        // 绘制图表
+        lineChartIns.setOption(lineOption)
+        // 基于准备好的dom，初始化echarts实例
+        barChartIns = echarts.init(document.getElementById('payChart'))
+        // 绘制图表
+        barChartIns.setOption(barOption)
+        // 更新图表数据
         lineChartIns.setOption({
           xAxis: {
             data: res.data.result.visit.category
@@ -185,6 +191,7 @@ function Dashboard (props) {
             }
           ]
         })
+        // 更新图表数据
         barChartIns.setOption({
           xAxis: {
             data: res.data.result.pay.category
@@ -208,84 +215,97 @@ function Dashboard (props) {
     }
   }, [])
 
+  const tabBarExtraContent = (
+    <div className="tabbar-right">
+      <ul className="filter-list">
+        <li>今日</li>
+        <li>本周</li>
+      </ul>
+      <RangePicker/>
+    </div>
+  )
+
   return (
     <div className="main-content">
       <Row gutter={16}>
         <Col span={6} className="summary-item">
           <div className="inner">
-            {/* <Skeleton loading={summaryLoad} active> */}
-            <div className="header">
-              <p className="title">总销售额</p>
-              <div className="btn-group">
-                <Tooltip title="指标说明">
-                  <i className="iconfont icon-tishi"></i>
-                </Tooltip>
+            <Skeleton loading={isLoad} active>
+              <div className="header">
+                <p className="title">总销售额</p>
+                <div className="btn-group">
+                  <Tooltip title="指标说明">
+                    <i className="iconfont icon-tishi"></i>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-            <div className="numb">￥ {window.toThousandFilter(summaryData.sales.total, 0)}</div>
-            <div className="content">
-              <span>周同比 {summaryData.sales.week.value}% 
-                <i className={`iconfont ${summaryData.sales.week.type === 'asc' ? 'icon-arrow-up-full text-danger' : 'icon-arrow-down-full text-success'}`}></i>
-              </span>
-              <span>日同比 {summaryData.sales.day.value}% 
-                <i className={`iconfont ${summaryData.sales.day.type === 'asc' ? 'icon-arrow-up-full text-danger' : 'icon-arrow-down-full text-success'}`}></i>
-              </span>
-            </div>
-            <div className="bottom">日销售额￥{window.toThousandFilter(summaryData.sales.dayTotal, 0)}</div>
-            {/* </Skeleton> */}
+              <div className="numb">￥ {window.toThousandFilter(summaryData.sales.total, 0)}</div>
+              <div className="content">
+                <span>周同比 {summaryData.sales.week.value}% 
+                  <i className={`iconfont ${summaryData.sales.week.type === 'asc' ? 'icon-arrow-up-full text-danger' : 'icon-arrow-down-full text-success'}`}></i>
+                </span>
+                <span>日同比 {summaryData.sales.day.value}% 
+                  <i className={`iconfont ${summaryData.sales.day.type === 'asc' ? 'icon-arrow-up-full text-danger' : 'icon-arrow-down-full text-success'}`}></i>
+                </span>
+              </div>
+              <div className="bottom">日销售额￥{window.toThousandFilter(summaryData.sales.dayTotal, 0)}</div>
+            </Skeleton>
           </div>
         </Col>
         <Col span={6} className="summary-item">
           <div className="inner">
-            {/* <Skeleton loading={summaryLoad} active> */}
-            <div className="header">
-              <p className="title">访问量</p>
-              <div className="btn-group">
-                <Tooltip title="指标说明">
-                  <i className="iconfont icon-tishi"></i>
-                </Tooltip>
+            <Skeleton loading={isLoad} active>
+              <div className="header">
+                <p className="title">访问量</p>
+                <div className="btn-group">
+                  <Tooltip title="指标说明">
+                    <i className="iconfont icon-tishi"></i>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-            <div className="numb">{window.toThousandFilter(summaryData.visit.total, 0)}</div>
-            <div className="content">
-              <div id="visitChart" className="chart"></div>
-            </div>
-            <div className="bottom">日访问量 {window.toThousandFilter(summaryData.visit.dayTotal, 0)}</div>
-            {/* </Skeleton> */}
+              <div className="numb">{window.toThousandFilter(summaryData.visit.total, 0)}</div>
+              <div className="content">
+                <div id="visitChart" className="chart"></div>
+              </div>
+              <div className="bottom">日访问量 {window.toThousandFilter(summaryData.visit.dayTotal, 0)}</div>
+            </Skeleton>
           </div>
         </Col>
         <Col span={6} className="summary-item">
           <div className="inner">
-            <div className="header">
-              <p className="title">支付笔数</p>
-              <div className="btn-group">
-                <Tooltip title="指标说明">
-                  <i className="iconfont icon-tishi"></i>
-                </Tooltip>
+            <Skeleton loading={isLoad} active>
+              <div className="header">
+                <p className="title">支付笔数</p>
+                <div className="btn-group">
+                  <Tooltip title="指标说明">
+                    <i className="iconfont icon-tishi"></i>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-            <div className="numb">{window.toThousandFilter(summaryData.pay.total, 0)}</div>
-            <div className="content">
-              <div id="payChart" className="chart"></div>
-            </div>
-            <div className="bottom">转化率 {summaryData.pay.dayTotal}%</div>
+              <div className="numb">{window.toThousandFilter(summaryData.pay.total, 0)}</div>
+              <div className="content">
+                <div id="payChart" className="chart"></div>
+              </div>
+              <div className="bottom">转化率 {summaryData.pay.dayTotal}%</div>
+            </Skeleton>
           </div>
         </Col>
         <Col span={6} className="summary-item">
           <div className="inner">
-            <div className="header">
-              <p className="title">运营活动效果</p>
-              <div className="btn-group">
-                <Tooltip title="指标说明">
-                  <i className="iconfont icon-tishi"></i>
-                </Tooltip>
+            <Skeleton loading={isLoad} active>
+              <div className="header">
+                <p className="title">运营活动效果</p>
+                <div className="btn-group">
+                  <Tooltip title="指标说明">
+                    <i className="iconfont icon-tishi"></i>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-            <div className="numb">{summaryData.active.total}%</div>
-            <div className="content">
-              <Progress percent={summaryData.active.total} showInfo={false} strokeColor="#13c2c2"/>
-            </div>
-            <div className="bottom">
+              <div className="numb">{summaryData.active.total}%</div>
+              <div className="content">
+                <Progress percent={summaryData.active.total} showInfo={false} strokeColor="#13c2c2"/>
+              </div>
+              <div className="bottom">
               <span>周同比 {summaryData.active.week.value}% 
                 <i className={`iconfont ${summaryData.active.week.type === 'asc' ? 'icon-arrow-up-full text-danger' : 'icon-arrow-down-full text-success'}`}></i>
               </span>
@@ -293,9 +313,19 @@ function Dashboard (props) {
                 <i className={`iconfont ${summaryData.active.day.type === 'asc' ? 'icon-arrow-up-full text-danger' : 'icon-arrow-down-full text-success'}`}></i>
               </span>
             </div>
+            </Skeleton>
           </div>
         </Col>
       </Row>
+      <Tabs defaultActiveKey="1" tabBarExtraContent={tabBarExtraContent} onChange={() => {}}>
+        <TabPane tab="销售额" key="1">
+          <Row gutter={16}>
+            <Col span={16}></Col>
+            <Col span={8}></Col>
+          </Row>
+        </TabPane>
+        <TabPane tab="访问量" key="2"></TabPane>
+      </Tabs>
     </div>
   )
 }
