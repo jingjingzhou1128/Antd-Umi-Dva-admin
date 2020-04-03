@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react'
-// Skeleton
 import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker} from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
+import moment from 'moment'
 
 import ajax from './service'
+
+import {dateFormat, momentDateFormat} from '@/utils'
 
 import './index.scss'
 
@@ -165,10 +167,23 @@ function Dashboard (props) {
     }
   })
   const [isLoad, setIsLoad] = useState(true)
+  const [timeRange, setTimeRange] = useState(null)
+  const [timeType, setTimeType] = useState('day')
+
+  function timeChangeHandle (dates, date) {
+    let time = null
+    if (date && date[0] && date[1]) time = date
+    setTimeRange(time)
+  }
+
+  function typeChangeHandle (type) {
+    setTimeType(type)
+  }
 
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
     let lineChartIns, barChartIns
+    // 获取summary数据
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
         setIsLoad(false)
@@ -215,13 +230,50 @@ function Dashboard (props) {
     }
   }, [])
 
+  useEffect(() => {
+    // 根据所选时间类型初始化时间范围值
+    function initTime () {
+      console.log(1)
+      let curDate = Date.parse(new Date())
+      let prevDate = curDate - 24 * 60 * 60 * 1000 * 6
+      setTimeRange([window.formatDate(prevDate, dateFormat), window.formatDate(curDate, dateFormat)])
+    }
+    initTime()
+  }, [timeType])
+
+  const timeTypeList = [
+    {
+      label: '今日',
+      value: 'day'
+    },
+    {
+      label: '本周',
+      value: 'week'
+    },
+    {
+      label: '本月',
+      value: 'month'
+    },
+    {
+      label: '本年',
+      value: 'year'
+    }
+  ]
+
   const tabBarExtraContent = (
     <div className="tabbar-right">
       <ul className="filter-list">
-        <li>今日</li>
-        <li>本周</li>
+        {
+          timeTypeList.map(item => (
+            <li key={item.value} className={timeType === item.value ? 'active' : ''} onClick={() => {typeChangeHandle(item.value)}}>{item.label}</li>
+          ))
+        }
       </ul>
-      <RangePicker/>
+      <RangePicker
+        separator="→" 
+        format={momentDateFormat} 
+        value={timeRange ? [moment(timeRange[0], momentDateFormat), moment(timeRange[1], momentDateFormat)] : null} 
+        onChange={(dates, date) => {timeChangeHandle(dates, date)}}/>
     </div>
   )
 

@@ -125,3 +125,34 @@ window.notificationWarn = (option) => {
     description: option.desc
   })
 }
+
+/**
+ * @author zhoujingjing
+ * @description 格式化时间
+ * @param option value 时间
+ *               format 时间格式   
+ */
+window.formatDate = (value, format = 'yyyy-MM-dd HH:mm:ss') => {
+  if (value === null || value === '' || value === undefined) {
+    return
+  }
+  var paddNum = function (num) {
+    num += ''
+    return num.replace(/^(\d)$/, '0$1')
+  }
+  var date = new Date(parseInt(value))
+  var cfg = {
+    yyyy: date.getFullYear(),
+    yy: date.getFullYear().toString().substring(2),
+    M: date.getMonth() + 1,
+    MM: paddNum(date.getMonth() + 1),
+    d: date.getDate(),
+    dd: paddNum(date.getDate()),
+    HH: paddNum(date.getHours()),
+    mm: paddNum(date.getMinutes()),
+    ss: paddNum(date.getSeconds())
+  }
+  return format.replace(/([a-z])(\1)*/ig, function (m) {
+    return cfg[m]
+  })
+}

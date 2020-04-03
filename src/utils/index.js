@@ -20,6 +20,30 @@ export const THEMES = [
   }
 ]
 
+/**
+ * @author zhoujingjing
+ * @description 日期时间格式
+ */
+export const dateTimeFormat = 'yyyy-MM-dd HH:mm:ss'
+
+/**
+ * @author zhoujingjing
+ * @description 日期格式
+ */
+export const dateFormat = 'yyyy-MM-dd'
+
+/**
+ * @author zhoujingjing
+ * @description moment日期时间格式
+ */
+export const momentDateTimeFormat = 'YYYY-MM-DD HH:mm:ss'
+
+/**
+ * @author zhoujingjing
+ * @description moment日期格式
+ */
+export const momentDateFormat = 'YYYY-MM-DD'
+
 // 函数节流
 export function throttle (fn, interval = 500) {
   let timer = null

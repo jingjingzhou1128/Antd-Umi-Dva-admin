@@ -82,5 +82,30 @@
   .filter-list {
     display: flex;
     margin-right: 30px;
+    > li {
+      padding: 0 10px;
+      cursor: pointer;
+      &.active {
+        color: #1890ff;
+      }
+    }
+  }
+}
+.ant-tabs {
+  background: #fff;
+  margin-top: 20px;
+  border-radius: 3px;
+  .ant-tabs-bar {
+    padding: 0 20px;
+  }
+  .ant-tabs-nav .ant-tabs-tab {
+    padding: 12px 0;
+    margin: 0 16px;
+    &:nth-child(1) {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
