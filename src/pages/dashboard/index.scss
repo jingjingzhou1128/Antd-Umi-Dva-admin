@@ -97,6 +97,7 @@
   border-radius: 3px;
   .ant-tabs-bar {
     padding: 0 20px;
+    margin-bottom: 0;
   }
   .ant-tabs-nav .ant-tabs-tab {
     padding: 12px 0;
@@ -107,5 +108,19 @@
     &:last-child {
       margin-right: 0;
     }
+  }
+}
+.tab-content {
+  .inner {
+    padding: 20px;
+  }
+  .title {
+    font-size: 14px;
+    color: #333333;
+    margin-bottom: 20px;
+  }
+  .chart {
+    height: 254px;
+    width: 100%;
   }
 }

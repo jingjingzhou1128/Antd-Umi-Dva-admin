@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker} from 'antd'
+import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker, List} from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
 import moment from 'moment'
 
 import ajax from './service'
 
 import {dateFormat, momentDateFormat} from '@/utils'
+import {lineOption, barOption, saleTrendOption} from './dataOptions'
 
 import './index.scss'
 
@@ -13,124 +14,6 @@ const echarts = require('echarts')
 
 const {TabPane} = Tabs
 const {RangePicker} = DatePicker
-
-const lineOption = {
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'none'
-    },
-    renderMode: 'html',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    textStyle: {
-      fontSize: '12px',
-      widht: 200,
-      color: '#333'
-    },
-    padding: [5, 15],
-    formatter: function (params) {
-      return `<div class="tip">
-          <span>${params[0].axisValue}</span>
-          <span>${params[0].value}</span>
-      </div>`
-    },
-    position: function (point, params, dom, rect, size) {
-      return [point[0], '50%']
-    },
-    extraCssText: 'border-radius: 2;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);'
-  },
-  grid: {
-    left: 0,
-    right: 0,
-    top: 10,
-    bottom: 0
-  },
-  xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    data: [],
-    show: false
-  },
-  yAxis: {
-    type: 'value',
-    show: false
-  },
-  series: [{
-    data: [],
-    type: 'line',
-    symbol: 'circle',
-    symbolSize: 4,
-    smooth: true,
-    itemStyle: {
-      color: 'transparent'
-    },
-    lineStyle: {
-      color: '#975fe4'
-    },
-    areaStyle: {
-      color: '#975fe4',
-      opacity: 1
-    },
-    emphasis: {
-      itemStyle: {
-        color: '#975fe4',
-        borderType: 'solid',
-        borderWidth: 2,
-        borderColor: '#fff'
-      }
-    }
-  }]
-}
-
-const barOption = {
-  color: ['#3aa0ff'],
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'none'
-    },
-    renderMode: 'html',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    textStyle: {
-      fontSize: '12px',
-      widht: 200,
-      color: '#333'
-    },
-    padding: [5, 15],
-    formatter: function (params) {
-      return `<div class="tip primary">
-        <span>${params[0].axisValue}</span>
-        <span>${params[0].value}</span>
-      </div>`
-    },
-    position: function (point, params, dom, rect, size) {
-      return [point[0], '50%']
-    },
-    extraCssText: 'border-radius: 2;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);'
-  },
-  grid: {
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0
-  },
-  xAxis: {
-    type: 'category',
-    data: [],
-    show: false
-  },
-  yAxis: {
-    type: 'value',
-    show: false
-  },
-  series: [
-    {
-      type: 'bar',
-      barWidth: 15,
-      data: []
-    }
-  ]
-}
 
 function Dashboard (props) {
   const [summaryData, setSummaryData] = useState({
@@ -182,7 +65,7 @@ function Dashboard (props) {
 
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
-    let lineChartIns, barChartIns
+    let lineChartIns, barChartIns, saleTrendChartIns
     // 获取summary数据
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
@@ -220,6 +103,20 @@ function Dashboard (props) {
         setSummaryData(res.data.result)
       }
     }).catch(() => {})
+    // 基于准备好的dom，初始化echarts实例
+    saleTrendChartIns = echarts.init(document.getElementById('saleTrendChart'))
+    // 绘制图表
+    saleTrendChartIns.setOption(saleTrendOption)
+    saleTrendChartIns.setOption({
+      xAxis: {
+        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+      },
+      series: [
+        {
+          data: [549, 500, 680, 700, 420, 450, 600, 450, 320, 400, 430, 300]
+        }
+      ]
+    })
     return () => {
       if (lineChartIns) {
         lineChartIns.dispose()
@@ -227,13 +124,15 @@ function Dashboard (props) {
       if (barChartIns) {
         barChartIns.dispose()
       }
+      if (saleTrendChartIns) {
+        saleTrendChartIns.dispose()
+      }
     }
   }, [])
 
   useEffect(() => {
     // 根据所选时间类型初始化时间范围值
     function initTime () {
-      console.log(1)
       let curDate = Date.parse(new Date())
       let prevDate = curDate - 24 * 60 * 60 * 1000 * 6
       setTimeRange([window.formatDate(prevDate, dateFormat), window.formatDate(curDate, dateFormat)])
@@ -371,9 +270,29 @@ function Dashboard (props) {
       </Row>
       <Tabs defaultActiveKey="1" tabBarExtraContent={tabBarExtraContent} onChange={() => {}}>
         <TabPane tab="销售额" key="1">
-          <Row gutter={16}>
-            <Col span={16}></Col>
-            <Col span={8}></Col>
+          <Row gutter={16} className="tab-content">
+            <Col span={16}>
+              <div className="inner">
+                <p className="title">销售趋势</p>
+                <div id="saleTrendChart" className="chart"></div>
+              </div>
+            </Col>
+            <Col span={8}>
+              <div className="inner">
+                <p className="title">门店销售额排名</p>
+                <List
+                  split={false}
+                  dataSource={[1,2,3,4,5]}
+                  renderItem={(item, index) => (
+                    <List.Item key={index}>
+                        <span className="index">{index + 1}</span>
+                        <span>工专路0号店</span>
+                        <span>{window.toThousandFilter(323234)}</span>
+                      </List.Item>
+                  )}>
+                </List>
+              </div>
+            </Col>
           </Row>
         </TabPane>
         <TabPane tab="访问量" key="2"></TabPane>
