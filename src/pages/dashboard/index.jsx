@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react'
-import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker, List} from 'antd'
+import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker, List, Card, Dropdown, Icon, Menu} from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
 import moment from 'moment'
 
 import ajax from './service'
 
 import {dateFormat, momentDateFormat} from '@/utils'
-import {lineOption, barOption, saleTrendOption} from './dataOptions'
+import {lineOption, barOption, saleTrendOption, searchOption} from './dataOptions'
+
+import ComTable from '@/components/ComTable'
 
 import './index.scss'
 
@@ -53,6 +55,72 @@ function Dashboard (props) {
   const [timeRange, setTimeRange] = useState(null)
   const [timeType, setTimeType] = useState('day')
 
+  const [tableData, setTableData] = useState({
+    data: [
+      {
+        id: '1',
+        rank: 1,
+        searchKey: '搜索关键词-1',
+        userCount: 221,
+        weekGain: 0
+      },
+      {
+        id: '2',
+        rank: 2,
+        searchKey: '搜索关键词-2',
+        userCount: 222,
+        weekGain: 1
+      },
+      {
+        id: '3',
+        rank: 3,
+        searchKey: '搜索关键词-3',
+        userCount: 227,
+        weekGain: 2
+      }
+    ],
+    hasPage: true,
+    page: {
+      current: 1,
+      pageSize: 10,
+      total: 50,
+      handleChangePage: handleChangePage,
+      handleChangeSize: (current, size) => {}
+    },
+    onChange: (pagination, filters, sorter) => {}
+  })
+
+  const tableColumns = [
+    {
+      title: '排名',
+      dataIndex: 'rank'
+    },
+    {
+      title: '搜索关键词',
+      dataIndex: 'searchKey'
+    },
+    {
+      title: '用户数',
+      dataIndex: 'userCount',
+      sorter: true,
+    },
+    {
+      title: '周涨幅',
+      dataIndex: 'weekGain',
+      sorter: true
+    }
+  ]
+
+  function handleChangePage (page) {
+    setTableData({
+      ...tableData,
+      page: {
+        ...tableData.page,
+        current: page
+      }
+    })
+  }
+
   function timeChangeHandle (dates, date) {
     let time = null
     if (date && date[0] && date[1]) time = date
@@ -65,7 +133,7 @@ function Dashboard (props) {
 
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
-    let lineChartIns, barChartIns, saleTrendChartIns
+    let lineChartIns, barChartIns, saleTrendChartIns, searchUserChartIns, searchPerChartIns
     // 获取summary数据
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
@@ -117,6 +185,30 @@ function Dashboard (props) {
         }
       ]
     })
+    // 基于准备好的dom，初始化echarts实例
+    searchUserChartIns = echarts.init(document.getElementById('searchUserChart'))
+    // 绘制图表
+    searchUserChartIns.setOption(searchOption)
+    searchUserChartIns.setOption({
+      xAxis: {
+        data: ['2020-03-17', '2020-03-18', '2020-03-19', '2020-03-20', '2020-03-21', '2020-03-22', '2020-03-23']
+      },
+      series: [{
+        data: [6, 5, 3, 4, 7, 5, 2]
+      }]
+    })
+    // 基于准备好的dom，初始化echarts实例
+    searchPerChartIns = echarts.init(document.getElementById('searchPerChart'))
+    // 绘制图表
+    searchPerChartIns.setOption(searchOption)
+    searchPerChartIns.setOption({
+      xAxis: {
+        data: ['2020-03-17', '2020-03-18', '2020-03-19', '2020-03-20', '2020-03-21', '2020-03-22', '2020-03-23']
+      },
+      series: [{
+        data: [6, 5, 3, 4, 7, 5, 2]
+      }]
+    })
     return () => {
       if (lineChartIns) {
         lineChartIns.dispose()
@@ -126,6 +218,9 @@ function Dashboard (props) {
       }
       if (saleTrendChartIns) {
         saleTrendChartIns.dispose()
+      }
+      if (searchUserChartIns) {
+        searchUserChartIns.dispose()
       }
     }
   }, [])
@@ -282,7 +377,7 @@ function Dashboard (props) {
                 <p className="title">门店销售额排名</p>
                 <List
                   split={false}
-                  dataSource={[1,2,3,4,5]}
+                  dataSource={[1,2,3,4,5,6]}
                   renderItem={(item, index) => (
                     <List.Item key={index}>
                         <span className="index">{index + 1}</span>
@@ -297,6 +392,62 @@ function Dashboard (props) {
         </TabPane>
         <TabPane tab="访问量" key="2"></TabPane>
       </Tabs>
+      <Row gutter={16}>
+        <Col span={12} className="online-search">
+          <Card
+            title="线上热门搜索"
+            extra={
+              <Dropdown
+                overlay={
+                  <Menu>
+                    <Menu.Item>操作一</Menu.Item>
+                    <Menu.Item>操作二</Menu.Item>
+                  </Menu>
+                }>
+                <Icon type="dash" />
+              </Dropdown>
+            }>
+            <Row gutter={16}>
+              <Col span={12}>
+                <div className="type">
+                  <span className="title">搜索用户数</span>
+                  <span className="tooltip">
+                    <Tooltip title="指标说明">
+                      <i className="iconfont icon-tishi"></i>
+                    </Tooltip>
+                  </span>
+                </div>
+                <div className="numb">
+                  <span>{window.toThousandFilter(12321, 0)}</span>
+                  <span>17.1<i className="iconfont icon-arrow-up-full text-danger"></i></span>
+                </div>
+                <div id="searchUserChart" className="chart"></div>
+              </Col>
+              <Col span={12}>
+                <div className="type">
+                  <span className="title">人均搜索次数</span>
+                  <span className="tooltip">
+                    <Tooltip title="指标说明">
+                      <i className="iconfont icon-tishi"></i>
+                    </Tooltip>
+                  </span>
+                </div>
+                <div className="numb">
+                  <span>2.7</span>
+                  <span>26.2<i className="iconfont icon-arrow-down-full text-success"></i></span>
+                </div>
+                <div id="searchPerChart" className="chart"></div>
+              </Col>
+            </Row>
+            <ComTable tableColumns={tableColumns} tableData={tableData}/>
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Card title="Card title">
+            Card content
+          </Card>
+        </Col>
+      </Row>
     </div>
   )
 }
