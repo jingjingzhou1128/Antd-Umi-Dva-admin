@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker, List, Card, Dropdown, Icon, Menu} from 'antd'
+import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker, List, Card, Dropdown, Icon, Menu, Table, Radio } from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
 import moment from 'moment'
 
 import ajax from './service'
 
 import {dateFormat, momentDateFormat} from '@/utils'
-import {lineOption, barOption, saleTrendOption, searchOption} from './dataOptions'
-
-import ComTable from '@/components/ComTable'
+import {lineOption, barOption, saleTrendOption, searchOption, salePerOption} from './dataOptions'
 
 import './index.scss'
 
@@ -55,49 +53,31 @@ function Dashboard (props) {
   const [timeRange, setTimeRange] = useState(null)
   const [timeType, setTimeType] = useState('day')
 
-  const [tableData, setTableData] = useState({
-    data: [
-      {
-        id: '1',
-        rank: 1,
-        searchKey: '搜索关键词-1',
-        userCount: 221,
-        weekGain: 0
-      },
-      {
-        id: '2',
-        rank: 2,
-        searchKey: '搜索关键词-2',
-        userCount: 222,
-        weekGain: 1
-      },
-      {
-        id: '3',
-        rank: 3,
-        searchKey: '搜索关键词-3',
-        userCount: 227,
-        weekGain: 2
-      }
-    ],
-    hasPage: true,
-    page: {
-      current: 1,
-      pageSize: 10,
-      total: 50,
-      handleChangePage: handleChangePage,
-      handleChangeSize: (current, size) => {}
-    },
-    onChange: (pagination, filters, sorter) => {}
+  const [tableData, setTableData] = useState([])
+
+  const [tablePageData, setTablePageData] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 40,
+    pageSizeOptions: ['10', '20', '30', '40'],
+    showSizeChanger: false,
+    showTotal: total => `共 ${total} 条`,
+    showQuickJumper: false,
+    hideOnSinglePage: true
   })
+
+  const [saleType, setSaleType] = useState('all')
 
   const tableColumns = [
     {
       title: '排名',
-      dataIndex: 'rank'
+      dataIndex: 'rank',
+      render: (text, row, index) => <span>{index + 1}</span>
     },
     {
       title: '搜索关键词',
-      dataIndex: 'searchKey'
+      dataIndex: 'searchKey',
+      render: (text, row, index) => <a href="/">{text}</a>
     },
     {
       title: '用户数',
@@ -111,16 +91,6 @@ function Dashboard (props) {
     }
   ]
 
-  function handleChangePage (page) {
-    setTableData({
-      ...tableData,
-      page: {
-        ...tableData.page,
-        current: page
-      }
-    })
-  }
-
   function timeChangeHandle (dates, date) {
     let time = null
     if (date && date[0] && date[1]) time = date
@@ -131,9 +101,21 @@ function Dashboard (props) {
     setTimeType(type)
   }
 
+  function handleTableChange (pagination, filters, sorter, extra) {
+    setTablePageData({
+      ...tablePageData,
+      current: pagination.current,
+      pageSize: pagination.pageSize
+    })
+  }
+
+  function handleSaleTypeChange (e) {
+    setSaleType(e.target.value)
+  }
+
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
-    let lineChartIns, barChartIns, saleTrendChartIns, searchUserChartIns, searchPerChartIns
+    let lineChartIns, barChartIns, saleTrendChartIns, searchUserChartIns, searchPerChartIns, salePerChartIns
     // 获取summary数据
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
@@ -209,6 +191,48 @@ function Dashboard (props) {
         data: [6, 5, 3, 4, 7, 5, 2]
       }]
     })
+    // 基于准备好的dom，初始化echarts实例
+    salePerChartIns = echarts.init(document.getElementById('salePerChart'))
+    // 绘制图表
+    salePerChartIns.setOption(salePerOption)
+    // 初始化表格数据
+    setTableData([
+      {
+        id: '1',
+        rank: 1,
+        searchKey: '搜索关键词-1',
+        userCount: 221,
+        weekGain: 0
+      },
+      {
+        id: '2',
+        rank: 2,
+        searchKey: '搜索关键词-2',
+        userCount: 222,
+        weekGain: 1
+      },
+      {
+        id: '3',
+        rank: 3,
+        searchKey: '搜索关键词-3',
+        userCount: 227,
+        weekGain: 2
+      },
+      {
+        id: '4',
+        rank: 4,
+        searchKey: '搜索关键词-4',
+        userCount: 222,
+        weekGain: 3
+      },
+      {
+        id: '5',
+        rank: 5,
+        searchKey: '搜索关键词-5',
+        userCount: 227,
+        weekGain: 4
+      }
+    ])
     return () => {
       if (lineChartIns) {
         lineChartIns.dispose()
@@ -270,6 +294,21 @@ function Dashboard (props) {
         onChange={(dates, date) => {timeChangeHandle(dates, date)}}/>
     </div>
   )
+
+  const saleTypeList = [
+    {
+      label: '全部渠道',
+      value: 'all'
+    },
+    {
+      label: '线上',
+      value: 'online'
+    },
+    {
+      label: '门店',
+      value: 'offline'
+    }
+  ]
 
   return (
     <div className="main-content">
@@ -439,12 +478,62 @@ function Dashboard (props) {
                 <div id="searchPerChart" className="chart"></div>
               </Col>
             </Row>
-            <ComTable tableColumns={tableColumns} tableData={tableData}/>
+            <div className="table-wrapper">
+              <Table 
+                columns={tableColumns} 
+                dataSource={tableData} 
+                rowKey='id'
+                onChange={handleTableChange}
+                pagination={tablePageData}
+              />
+            </div>
           </Card>
         </Col>
-        <Col span={12}>
-          <Card title="Card title">
-            Card content
+        <Col span={12} className="sale-per">
+          <Card 
+            title="销售额类别占比"
+            extra={
+              <div className="operate">
+                <Radio.Group onChange={handleSaleTypeChange} value={saleType}>
+                  {
+                    saleTypeList.map(item => <Radio.Button value={item.value} key={item.value}>{item.label}</Radio.Button>)
+                  }
+                </Radio.Group>
+                <Dropdown
+                  overlay={
+                    <Menu>
+                      <Menu.Item>操作一</Menu.Item>
+                      <Menu.Item>操作二</Menu.Item>
+                    </Menu>
+                  }>
+                  <Icon type="dash" />
+                </Dropdown>
+              </div>
+            }>
+            <Row gutter={16} type="flex" align="middle">
+              <Col span={12}>
+                <div id="salePerChart" className="chart"></div>
+              </Col>
+              <Col span={12}>
+                <ul className="legend-list">
+                  <li>
+                    <span className="name">食用酒水</span>
+                    <span className="per">21.04%</span>
+                    <span className="price">¥ 3,321</span>
+                  </li>
+                  <li>
+                    <span className="name">食用酒水</span>
+                    <span className="per">21.04%</span>
+                    <span className="price">¥ 3,321</span>
+                  </li>
+                  <li>
+                    <span className="name">食用酒水</span>
+                    <span className="per">21.04%</span>
+                    <span className="price">¥ 3,321</span>
+                  </li>
+                </ul>
+              </Col>
+            </Row>
           </Card>
         </Col>
       </Row>

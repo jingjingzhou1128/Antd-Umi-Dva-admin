@@ -182,3 +182,74 @@
     margin-bottom: 10px;
   }
 }
+.table-wrapper {
+  width: 100%;
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 8px;
+  }
+}
+.sale-per {
+  .ant-card-extra {
+    padding: 12px 0;
+  }
+  .operate {
+    .ant-radio-group {
+      margin-right: 15px;
+    }
+  }
+  .chart {
+    width: 100%;
+    height: 250px;
+  }
+  .legend-list {
+    > li {
+      font-size: 14px;
+      color: rgba(0,0,0,.65);
+      position: relative;
+      padding-left: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      cursor: pointer;
+      &::before {
+        position: absolute;
+        content: "";
+        width: 8px;
+        height: 8px;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #f0f0f0;
+        border-radius: 50%;
+      }
+      & + li {
+        margin-top: 10px;
+      }
+      > span {
+        padding: 0 6px;
+        &:first-child {
+          padding-left: 0;
+        }
+        &:last-child {
+          padding-right: 0;
+        }
+      }
+      .name {
+        position: relative;
+        &::after {
+          content: "";
+          position: absolute;
+          height: 12px;
+          width: 1px;
+          background: #f0f0f0;
+          top: 50%;
+          right: 0;
+          transform: translateY(-50%);
+        }
+      }
+      .per {
+        color: rgba(0,0,0,.45);
+      }
+    }
+  }
+}

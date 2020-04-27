@@ -260,3 +260,65 @@ export const searchOption = {
     }
   }]
 }
+
+export const salePerOption = {
+  title: {
+    text: '销售额',
+    textStyle: {
+      color: '#aaa',
+      fontWeight: 'normal',
+      fontSize: 14
+    },
+    subtext: '¥ 15,781',
+    subtextStyle: {
+      color: '#333',
+      fontSize: 20,
+      align: 'center'
+    },
+    itemGap: 20,
+    top: '40%',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item',
+    renderMode: 'html',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    textStyle: {
+      fontSize: '12px',
+      widht: 200,
+      color: '#333'
+    },
+    padding: [5, 15],
+    formatter: function (params) {
+      return `<div class="tip">
+          <span>${params.name}</span>
+          <span>${params.percent}%</span>
+      </div>`
+    },
+    extraCssText: 'border-radius: 2;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);'
+ },
+  series: [
+    {
+      name: '销售额',
+      type: 'pie',
+      radius: ['70%', '90%'],
+      legendHoverLink: false,
+      hoverAnimation: false,
+      selectedMode: 'multiple',
+      selectedOffset: 5,
+      label: {
+        show: false
+      },
+      labelLine: {
+        show: false
+      },
+      data: [
+        {value: 335, name: '家用电器', selected: true},
+        {value: 310, name: '食用酒水', selected: true},
+        {value: 234, name: '个护健康', selected: true},
+        {value: 135, name: '服饰箱包', selected: true},
+        {value: 1548, name: '母婴产品', selected: true}
+      ]
+    }
+  ]
+}
