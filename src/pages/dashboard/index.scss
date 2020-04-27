@@ -150,6 +150,10 @@
   padding: 20px;
 }
 .online-search {
+  .ant-card-body {
+    height: 465px;
+    overflow: hidden;
+  }
   .type, .numb {
     margin-bottom: 10px;
   }
@@ -192,6 +196,13 @@
 .sale-per {
   .ant-card-extra {
     padding: 12px 0;
+  }
+  .ant-card-body {
+    height: 465px;
+    overflow: hidden;
+    > .ant-row-flex {
+      height: 100%;
+    }
   }
   .operate {
     .ant-radio-group {

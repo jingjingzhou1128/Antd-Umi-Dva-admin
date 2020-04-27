@@ -8,7 +8,7 @@ export const lineOption = {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     textStyle: {
       fontSize: '12px',
-      widht: 200,
+      width: 200,
       color: '#333'
     },
     padding: [5, 15],
@@ -77,7 +77,7 @@ export const barOption = {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     textStyle: {
       fontSize: '12px',
-      widht: 200,
+      width: 200,
       color: '#333'
     },
     padding: [5, 15],
@@ -127,7 +127,7 @@ export const saleTrendOption = {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     textStyle: {
       fontSize: '12px',
-      widht: 200,
+      width: 200,
       color: '#333'
     },
     padding: [5, 15],
@@ -203,7 +203,7 @@ export const searchOption = {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     textStyle: {
       fontSize: '12px',
-      widht: 200,
+      width: 200,
       color: '#333'
     },
     padding: [5, 15],
@@ -269,7 +269,7 @@ export const salePerOption = {
       fontWeight: 'normal',
       fontSize: 14
     },
-    subtext: '¥ 15,781',
+    subtext: '',
     subtextStyle: {
       color: '#333',
       fontSize: 20,
@@ -285,7 +285,7 @@ export const salePerOption = {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     textStyle: {
       fontSize: '12px',
-      widht: 200,
+      width: 200,
       color: '#333'
     },
     padding: [5, 15],
@@ -312,13 +312,7 @@ export const salePerOption = {
       labelLine: {
         show: false
       },
-      data: [
-        {value: 335, name: '家用电器', selected: true},
-        {value: 310, name: '食用酒水', selected: true},
-        {value: 234, name: '个护健康', selected: true},
-        {value: 135, name: '服饰箱包', selected: true},
-        {value: 1548, name: '母婴产品', selected: true}
-      ]
+      data: []
     }
   ]
 }

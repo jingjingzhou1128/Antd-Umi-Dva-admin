@@ -68,6 +68,8 @@ function Dashboard (props) {
 
   const [saleType, setSaleType] = useState('all')
 
+  const [saleLegned, setSaleLegend] = useState([])
+
   const tableColumns = [
     {
       title: '排名',
@@ -151,6 +153,33 @@ function Dashboard (props) {
           ]
         })
         setSummaryData(res.data.result)
+        // 初始化表格数据
+        setTableData(res.data.result.onlineSearch.table)
+        // setTablePageData({
+        //   ...tablePageData,
+        //   total: res.data.result.onlineSearch.tableTotal
+        // })
+        // 更新销售额类别占比salePer
+        // 更新销售额图表，基于准备好的dom，初始化echarts实例
+        salePerChartIns = echarts.init(document.getElementById('salePerChart'))
+        // 绘制图表
+        salePerChartIns.setOption(salePerOption)
+        let salePerData = res.data.result.salePer
+        salePerChartIns.setOption({
+          title: {
+            subtext: `￥ ${salePerData.total}`
+          },
+          series: [
+            {
+              data: salePerData.value
+            }
+          ]
+        })
+        // 初始化销售图例
+        setSaleLegend(salePerData.value.map(item => ({
+          ...item,
+          percent: ((item.value / salePerData.total) * 100).toFixed(2)
+        })))
       }
     }).catch(() => {})
     // 基于准备好的dom，初始化echarts实例
@@ -191,48 +220,6 @@ function Dashboard (props) {
         data: [6, 5, 3, 4, 7, 5, 2]
       }]
     })
-    // 基于准备好的dom，初始化echarts实例
-    salePerChartIns = echarts.init(document.getElementById('salePerChart'))
-    // 绘制图表
-    salePerChartIns.setOption(salePerOption)
-    // 初始化表格数据
-    setTableData([
-      {
-        id: '1',
-        rank: 1,
-        searchKey: '搜索关键词-1',
-        userCount: 221,
-        weekGain: 0
-      },
-      {
-        id: '2',
-        rank: 2,
-        searchKey: '搜索关键词-2',
-        userCount: 222,
-        weekGain: 1
-      },
-      {
-        id: '3',
-        rank: 3,
-        searchKey: '搜索关键词-3',
-        userCount: 227,
-        weekGain: 2
-      },
-      {
-        id: '4',
-        rank: 4,
-        searchKey: '搜索关键词-4',
-        userCount: 222,
-        weekGain: 3
-      },
-      {
-        id: '5',
-        rank: 5,
-        searchKey: '搜索关键词-5',
-        userCount: 227,
-        weekGain: 4
-      }
-    ])
     return () => {
       if (lineChartIns) {
         lineChartIns.dispose()
@@ -510,27 +497,23 @@ function Dashboard (props) {
                 </Dropdown>
               </div>
             }>
-            <Row gutter={16} type="flex" align="middle">
+            <Row gutter={16} type="flex" align="middle" justify="space-between">
               <Col span={12}>
                 <div id="salePerChart" className="chart"></div>
               </Col>
               <Col span={12}>
                 <ul className="legend-list">
-                  <li>
-                    <span className="name">食用酒水</span>
-                    <span className="per">21.04%</span>
-                    <span className="price">¥ 3,321</span>
-                  </li>
-                  <li>
-                    <span className="name">食用酒水</span>
-                    <span className="per">21.04%</span>
-                    <span className="price">¥ 3,321</span>
-                  </li>
-                  <li>
-                    <span className="name">食用酒水</span>
-                    <span className="per">21.04%</span>
-                    <span className="price">¥ 3,321</span>
-                  </li>
+                  {
+                    saleLegned.map((item, index) => {
+                      return (
+                        <li key={index}>
+                          <span className="name">{item.name}</span>
+                          <span className="per">{item.percent}%</span>
+                          <span className="price">¥ {item.value}</span>
+                        </li>
+                      )
+                    })
+                  }
                 </ul>
               </Col>
             </Row>
