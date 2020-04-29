@@ -6,7 +6,9 @@ import moment from 'moment'
 import ajax from './service'
 
 import {dateFormat, momentDateFormat} from '@/utils'
-import {lineOption, barOption, saleTrendOption, searchOption, salePerOption} from './dataOptions'
+import {lineOption, barOption, saleTrendOption, searchOption, salePerOption, colors} from './dataOptions'
+
+// import Summary from './components/Summary'
 
 import './index.scss'
 
@@ -57,8 +59,8 @@ function Dashboard (props) {
 
   const [tablePageData, setTablePageData] = useState({
     current: 1,
-    pageSize: 10,
-    total: 40,
+    pageSize: 5,
+    total: 0,
     pageSizeOptions: ['10', '20', '30', '40'],
     showSizeChanger: false,
     showTotal: total => `共 ${total} 条`,
@@ -68,7 +70,9 @@ function Dashboard (props) {
 
   const [saleType, setSaleType] = useState('all')
 
-  const [saleLegned, setSaleLegend] = useState([])
+  const [salePerData, setSalePerData] = useState([])
+
+  const [salePerChartIns, setSalePerChartIns] = useState(null)
 
   const tableColumns = [
     {
@@ -115,6 +119,20 @@ function Dashboard (props) {
     setSaleType(e.target.value)
   }
 
+  function toggleSaleTypeLegend (name) {
+    let salePerValue = salePerData.map(item => {
+      if (item.name !== name) return item
+      item.checked = !item.checked
+      return item
+    })
+    salePerChartIns.setOption({
+      series: [{
+        data: salePerValue.filter(item => item.checked)
+      }]
+    })
+    setSalePerData(salePerValue)
+  }
+
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
     let lineChartIns, barChartIns, saleTrendChartIns, searchUserChartIns, searchPerChartIns, salePerChartIns
@@ -155,31 +173,38 @@ function Dashboard (props) {
         setSummaryData(res.data.result)
         // 初始化表格数据
         setTableData(res.data.result.onlineSearch.table)
-        // setTablePageData({
-        //   ...tablePageData,
-        //   total: res.data.result.onlineSearch.tableTotal
-        // })
+        // 初始化表格分页数据
+        setTablePageData(data => ({
+          ...data,
+          total: res.data.result.onlineSearch.tableTotal
+        }))
         // 更新销售额类别占比salePer
         // 更新销售额图表，基于准备好的dom，初始化echarts实例
         salePerChartIns = echarts.init(document.getElementById('salePerChart'))
+        setSalePerChartIns(salePerChartIns)
         // 绘制图表
         salePerChartIns.setOption(salePerOption)
-        let salePerData = res.data.result.salePer
+        let salePerValue = res.data.result.salePer.value.map((item, index) => ({
+          ...item,
+          selected: true,
+          checked: true,
+          itemStyle: {
+            color: colors[index % colors.length]
+          },
+          percent: ((item.value / res.data.result.salePer.total) * 100).toFixed(2)
+        }))
         salePerChartIns.setOption({
           title: {
-            subtext: `￥ ${salePerData.total}`
+            subtext: `￥ ${res.data.result.salePer.total}`
           },
           series: [
             {
-              data: salePerData.value
+              data: salePerValue
             }
           ]
         })
         // 初始化销售图例
-        setSaleLegend(salePerData.value.map(item => ({
-          ...item,
-          percent: ((item.value / salePerData.total) * 100).toFixed(2)
-        })))
+        setSalePerData(salePerValue)
       }
     }).catch(() => {})
     // 基于准备好的dom，初始化echarts实例
@@ -504,9 +529,10 @@ function Dashboard (props) {
               <Col span={12}>
                 <ul className="legend-list">
                   {
-                    saleLegned.map((item, index) => {
+                    salePerData.map((item, index) => {
                       return (
-                        <li key={index}>
+                        <li key={index} onClick={() => {toggleSaleTypeLegend(item.name)}} className={item.checked ? '' : 'unselected'}>
+                          <span className="circle" style={{backgroundColor: item.itemStyle.color}}></span>
                           <span className="name">{item.name}</span>
                           <span className="per">{item.percent}%</span>
                           <span className="price">¥ {item.value}</span>

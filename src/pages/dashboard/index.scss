@@ -222,17 +222,17 @@
       white-space: nowrap;
       overflow: hidden;
       cursor: pointer;
-      &::before {
-        position: absolute;
-        content: "";
-        width: 8px;
-        height: 8px;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        background: #f0f0f0;
-        border-radius: 50%;
-      }
+      // &::before {
+      //   position: absolute;
+      //   content: "";
+      //   width: 8px;
+      //   height: 8px;
+      //   left: 0;
+      //   top: 50%;
+      //   transform: translateY(-50%);
+      //   background: #f0f0f0;
+      //   border-radius: 50%;
+      // }
       & + li {
         margin-top: 10px;
       }
@@ -244,6 +244,16 @@
         &:last-child {
           padding-right: 0;
         }
+      }
+      .circle {
+        position: absolute;
+        content: "";
+        width: 8px;
+        height: 8px;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 50%;
       }
       .name {
         position: relative;
@@ -260,6 +270,11 @@
       }
       .per {
         color: rgba(0,0,0,.45);
+      }
+      &.unselected {
+        .circle {
+          background: #f0f0f0 !important;
+        }
       }
     }
   }

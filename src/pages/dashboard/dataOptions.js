@@ -1,3 +1,5 @@
+export const colors = ['#1890ff', '#13c2c2', '#2fc25b', '#facc14', '#f04864', '#8543e0']
+
 export const lineOption = {
   tooltip: {
     trigger: 'axis',
@@ -289,12 +291,12 @@ export const salePerOption = {
       color: '#333'
     },
     padding: [5, 15],
-    formatter: function (params) {
-      return `<div class="tip">
-          <span>${params.name}</span>
-          <span>${params.percent}%</span>
-      </div>`
-    },
+    // formatter: function (params) {
+    //   return `<div class="tip">
+    //       <span>${params.name}</span>
+    //       <span>${params.percent}%</span>
+    //   </div>`
+    // },
     extraCssText: 'border-radius: 2;box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);'
  },
   series: [
