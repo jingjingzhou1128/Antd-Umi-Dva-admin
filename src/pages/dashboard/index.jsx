@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {Row, Col, Tabs, DatePicker, Card, Dropdown, Icon, Menu, Radio } from 'antd'
+import {Row, Col, Tabs, DatePicker} from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
 import moment from 'moment'
 
 import ajax from './service'
 
 import {dateFormat, momentDateFormat} from '@/utils'
-import {colors, searchOption} from './dataOptions'
+import {searchOption} from './dataOptions'
 
 import Summary from './components/Summary'
 import SaleTab from './components/SaleTab'
@@ -15,7 +15,7 @@ import SaleType from './components/SaleType'
 
 import './index.scss'
 
-const echarts = require('echarts')
+// const echarts = require('echarts')
 
 const {TabPane} = Tabs
 const {RangePicker} = DatePicker
@@ -46,7 +46,7 @@ function Dashboard (props) {
 
   const [saleType, setSaleType] = useState('all')
 
-  const [salePerChartIns, setSalePerChartIns] = useState(null)
+  // const [salePerChartIns, setSalePerChartIns] = useState(null)
 
   const [saleTrend, setSaleTrend] = useState({})
 
@@ -55,6 +55,8 @@ function Dashboard (props) {
   const [searchPerOption, setSearchPerOption] = useState(searchOption)
 
   const [salePerData, setSalePerData] = useState([])
+
+  const [salePerTotal, setSalePerTotal] = useState(0)
 
   function timeChangeHandle (dates, date) {
     let time = null
@@ -78,23 +80,23 @@ function Dashboard (props) {
     setSaleType(e.target.value)
   }
 
-  function toggleSaleTypeLegend (name) {
-    let salePerValue = salePerData.map(item => {
-      if (item.name !== name) return item
-      item.checked = !item.checked
-      return item
-    })
-    salePerChartIns.setOption({
-      series: [{
-        data: salePerValue.filter(item => item.checked)
-      }]
-    })
-    setSalePerData(salePerValue)
-  }
+  // function toggleSaleTypeLegend (name) {
+  //   let salePerValue = salePerData.map(item => {
+  //     if (item.name !== name) return item
+  //     item.checked = !item.checked
+  //     return item
+  //   })
+  //   salePerChartIns.setOption({
+  //     series: [{
+  //       data: salePerValue.filter(item => item.checked)
+  //     }]
+  //   })
+  //   setSalePerData(salePerValue)
+  // }
 
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
-    let salePerChartIns
+    // let salePerChartIns
     // 获取summary数据
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
@@ -136,27 +138,28 @@ function Dashboard (props) {
         // setSalePerChartIns(salePerChartIns)
         // 绘制图表
         // salePerChartIns.setOption(salePerOption)
-        let salePerValue = res.data.result.salePer.value.map((item, index) => ({
-          ...item,
-          selected: true,
-          checked: true,
-          itemStyle: {
-            color: colors[index % colors.length]
-          },
-          percent: ((item.value / res.data.result.salePer.total) * 100).toFixed(2)
-        }))
-        salePerChartIns.setOption({
-          title: {
-            subtext: `￥ ${res.data.result.salePer.total}`
-          },
-          series: [
-            {
-              data: salePerValue
-            }
-          ]
-        })
+        setSalePerTotal(res.data.result.salePer.total)
+        // let salePerValue = res.data.result.salePer.value.map((item, index) => ({
+        //   ...item,
+        //   selected: true,
+        //   checked: true,
+        //   itemStyle: {
+        //     color: colors[index % colors.length]
+        //   },
+        //   percent: ((item.value / res.data.result.salePer.total) * 100).toFixed(2)
+        // }))
+        // salePerChartIns.setOption({
+        //   title: {
+        //     subtext: `￥ ${res.data.result.salePer.total}`
+        //   },
+        //   series: [
+        //     {
+        //       data: salePerValue
+        //     }
+        //   ]
+        // })
         // 初始化销售图例
-        setSalePerData(salePerValue)
+        setSalePerData(res.data.result.salePer.value)
       }
     }).catch(() => {})
   }, [])
@@ -207,20 +210,20 @@ function Dashboard (props) {
     </div>
   )
 
-  const saleTypeList = [
-    {
-      label: '全部渠道',
-      value: 'all'
-    },
-    {
-      label: '线上',
-      value: 'online'
-    },
-    {
-      label: '门店',
-      value: 'offline'
-    }
-  ]
+  // const saleTypeList = [
+  //   {
+  //     label: '全部渠道',
+  //     value: 'all'
+  //   },
+  //   {
+  //     label: '线上',
+  //     value: 'online'
+  //   },
+  //   {
+  //     label: '门店',
+  //     value: 'offline'
+  //   }
+  // ]
 
   return (
     <div className="main-content">
@@ -452,7 +455,11 @@ function Dashboard (props) {
               </Col>
             </Row>
           </Card> */}
-          <SaleType handleSaleTypeChange={handleSaleTypeChange} saleType={saleType} salePerData={saleType} toggleSaleTypeLegend={toggleSaleTypeLegend}/>
+          <SaleType 
+            handleSaleTypeChange={handleSaleTypeChange} 
+            saleType={saleType} 
+            salePerData={salePerData} 
+            salePerTotal={salePerTotal}/>
         </Col>
       </Row>
     </div>

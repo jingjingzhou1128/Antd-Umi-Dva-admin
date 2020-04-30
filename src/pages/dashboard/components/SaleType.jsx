@@ -1,10 +1,12 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Row, Col, Card, Dropdown, Icon, Menu, Radio} from 'antd'
 import PropTypes from 'prop-types'
 
-import {salePerOption, colors} from './dataOptions'
+import {salePerOption, colors} from '../dataOptions'
 
-function SaleType ({handleSaleTypeChange, saleType, salePerData, toggleSaleTypeLegend}) {
+import ComChart from '@/components/ComChart'
+
+function SaleType ({handleSaleTypeChange, saleType, salePerData, salePerTotal}) {
   const saleTypeList = [
     {
       label: '全部渠道',
@@ -20,6 +22,40 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, toggleSaleTypeL
     }
   ]
 
+  const [salePerList, setSalePerList] = useState([])
+  const [salePerOptions, setSalePerOptions] = useState(salePerOption)
+
+  useEffect(() => {
+    let salePerValue = salePerData.map((item, index) => ({
+      ...item,
+      selected: true,
+      checked: true,
+      itemStyle: {
+        color: colors[index % colors.length]
+      },
+      percent: ((item.value / salePerTotal) * 100).toFixed(2)
+    }))
+    setSalePerList(salePerValue)
+    setSalePerOptions(options => {
+      options.title.subtext = `￥ ${salePerTotal}`
+      options.series[0].data = salePerValue
+      return options
+    })
+  }, [salePerData, salePerTotal])
+
+  function toggleSaleTypeLegend (name) {
+    let salePerValue = salePerList.map(item => {
+      if (item.name !== name) return item
+      item.checked = !item.checked
+      return item
+    })
+    setSalePerList(salePerValue)
+    setSalePerOptions(options => {
+      options.series[0].data = salePerValue.filter(item => item.checked)
+      return options
+    })
+  }
+  console.log(salePerOptions)
   return (
     <Card 
       title="销售额类别占比"
@@ -43,12 +79,13 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, toggleSaleTypeL
       }>
       <Row gutter={16} type="flex" align="middle" justify="space-between">
         <Col span={12}>
-          <div id="salePerChart" className="chart"></div>
+          {/* <div id="salePerChart" className="chart"></div> */}
+          <ComChart chartId="salePerChart" chartOptions={salePerOptions}/>
         </Col>
         <Col span={12}>
           <ul className="legend-list">
             {
-              salePerData.map((item, index) => {
+              salePerList.map((item, index) => {
                 return (
                   <li key={index} onClick={() => {toggleSaleTypeLegend(item.name)}} className={item.checked ? '' : 'unselected'}>
                     <span className="circle" style={{backgroundColor: item.itemStyle.color}}></span>
@@ -68,9 +105,9 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, toggleSaleTypeL
 
 SaleType.propTypes = {
   saleType: PropTypes.string.isRequired,
-  salePerData: PropTypes.object.isRequired,
+  salePerData: PropTypes.array.isRequired,
   handleSaleTypeChange: PropTypes.func.isRequired,
-  toggleSaleTypeLegend: PropTypes.func.isRequired
+  salePerTotal: PropTypes.number.isRequired
 }
 
 SaleType.defaultProps = {}
