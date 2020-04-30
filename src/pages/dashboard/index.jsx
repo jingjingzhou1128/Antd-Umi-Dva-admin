@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import {Row, Col, Tooltip, Progress, Skeleton, Tabs, DatePicker, List, Card, Dropdown, Icon, Menu, Table, Radio } from 'antd'
+import {Row, Col, Tabs, DatePicker, Card, Dropdown, Icon, Menu, Radio } from 'antd'
 // import {formatMessage} from 'umi-plugin-react/locale'
 import moment from 'moment'
 
 import ajax from './service'
 
 import {dateFormat, momentDateFormat} from '@/utils'
-import {lineOption, barOption, saleTrendOption, searchOption, salePerOption, colors} from './dataOptions'
+import {colors, searchOption} from './dataOptions'
 
-// import Summary from './components/Summary'
+import Summary from './components/Summary'
+import SaleTab from './components/SaleTab'
+import OnlineSearch from './components/OnlineSearch'
+import SaleType from './components/SaleType'
 
 import './index.scss'
 
@@ -19,37 +22,10 @@ const {RangePicker} = DatePicker
 
 function Dashboard (props) {
   const [summaryData, setSummaryData] = useState({
-    sales: {
-      total: 0,
-      dayTotal: 0,
-      week: {
-        value: 0,
-        type: 'asc'
-      },
-      day: {
-        value: 0,
-        type: 'desc'
-      }
-    },
-    visit: {
-      total: 0,
-      dayTotal: 0
-    },
-    pay: {
-      total: 0,
-      dayTotal: 0
-    },
-    active: {
-      total: 0,
-      week: {
-        value: 0,
-        type: 'asc'
-      },
-      day: {
-        value: 0,
-        type: 'desc'
-      }
-    }
+    sales: {},
+    visit: {},
+    pay: {},
+    active: {}
   })
   const [isLoad, setIsLoad] = useState(true)
   const [timeRange, setTimeRange] = useState(null)
@@ -70,32 +46,15 @@ function Dashboard (props) {
 
   const [saleType, setSaleType] = useState('all')
 
-  const [salePerData, setSalePerData] = useState([])
-
   const [salePerChartIns, setSalePerChartIns] = useState(null)
 
-  const tableColumns = [
-    {
-      title: '排名',
-      dataIndex: 'rank',
-      render: (text, row, index) => <span>{index + 1}</span>
-    },
-    {
-      title: '搜索关键词',
-      dataIndex: 'searchKey',
-      render: (text, row, index) => <a href="/">{text}</a>
-    },
-    {
-      title: '用户数',
-      dataIndex: 'userCount',
-      sorter: true,
-    },
-    {
-      title: '周涨幅',
-      dataIndex: 'weekGain',
-      sorter: true
-    }
-  ]
+  const [saleTrend, setSaleTrend] = useState({})
+
+  const [searchUserOptions, setSearchUserOptions] = useState(searchOption)
+
+  const [searchPerOption, setSearchPerOption] = useState(searchOption)
+
+  const [salePerData, setSalePerData] = useState([])
 
   function timeChangeHandle (dates, date) {
     let time = null
@@ -135,42 +94,35 @@ function Dashboard (props) {
 
   useEffect(() => {
     // 基于准备好的dom，初始化echarts实例
-    let lineChartIns, barChartIns, saleTrendChartIns, searchUserChartIns, searchPerChartIns, salePerChartIns
+    let salePerChartIns
     // 获取summary数据
     ajax.getSummaryData({type: 'week'}).then(res => {
       if (res.data.flag) {
+        // 初始化归总数据
+        setSummaryData({
+          sales: res.data.result.sales,
+          visit: res.data.result.visit,
+          pay: res.data.result.pay,
+          active: res.data.result.active
+        })
         setIsLoad(false)
-        // 基于准备好的dom，初始化echarts实例
-        lineChartIns = echarts.init(document.getElementById('visitChart'))
-        // 绘制图表
-        lineChartIns.setOption(lineOption)
-        // 基于准备好的dom，初始化echarts实例
-        barChartIns = echarts.init(document.getElementById('payChart'))
-        // 绘制图表
-        barChartIns.setOption(barOption)
-        // 更新图表数据
-        lineChartIns.setOption({
-          xAxis: {
-            data: res.data.result.visit.category
-          },
-          series: [
-            {
-              data: res.data.result.visit.data
-            }
-          ]
+        // 初始化销售趋势数据
+        setSaleTrend({
+          xAxis: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+          value: [549, 500, 680, 700, 420, 450, 600, 450, 320, 400, 430, 300]
         })
-        // 更新图表数据
-        barChartIns.setOption({
-          xAxis: {
-            data: res.data.result.pay.category
-          },
-          series: [
-            {
-              data: res.data.result.pay.data
-            }
-          ]
+        // 初始化搜索用户数
+        setSearchUserOptions(data => {
+          data.xAxis.data = ['2020-03-17', '2020-03-18', '2020-03-19', '2020-03-20', '2020-03-21', '2020-03-22', '2020-03-23']
+          data.series[0].data = [6, 5, 3, 4, 7, 5, 2]
+          return data
         })
-        setSummaryData(res.data.result)
+        // 初始化人均搜索次数
+        setSearchPerOption(data => {
+          data.xAxis.data = ['2020-03-17', '2020-03-18', '2020-03-19', '2020-03-20', '2020-03-21', '2020-03-22', '2020-03-23']
+          data.series[0].data = [6, 5, 3, 4, 7, 5, 2]
+          return data
+        })
         // 初始化表格数据
         setTableData(res.data.result.onlineSearch.table)
         // 初始化表格分页数据
@@ -180,10 +132,10 @@ function Dashboard (props) {
         }))
         // 更新销售额类别占比salePer
         // 更新销售额图表，基于准备好的dom，初始化echarts实例
-        salePerChartIns = echarts.init(document.getElementById('salePerChart'))
-        setSalePerChartIns(salePerChartIns)
+        // salePerChartIns = echarts.init(document.getElementById('salePerChart'))
+        // setSalePerChartIns(salePerChartIns)
         // 绘制图表
-        salePerChartIns.setOption(salePerOption)
+        // salePerChartIns.setOption(salePerOption)
         let salePerValue = res.data.result.salePer.value.map((item, index) => ({
           ...item,
           selected: true,
@@ -207,58 +159,6 @@ function Dashboard (props) {
         setSalePerData(salePerValue)
       }
     }).catch(() => {})
-    // 基于准备好的dom，初始化echarts实例
-    saleTrendChartIns = echarts.init(document.getElementById('saleTrendChart'))
-    // 绘制图表
-    saleTrendChartIns.setOption(saleTrendOption)
-    saleTrendChartIns.setOption({
-      xAxis: {
-        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
-      },
-      series: [
-        {
-          data: [549, 500, 680, 700, 420, 450, 600, 450, 320, 400, 430, 300]
-        }
-      ]
-    })
-    // 基于准备好的dom，初始化echarts实例
-    searchUserChartIns = echarts.init(document.getElementById('searchUserChart'))
-    // 绘制图表
-    searchUserChartIns.setOption(searchOption)
-    searchUserChartIns.setOption({
-      xAxis: {
-        data: ['2020-03-17', '2020-03-18', '2020-03-19', '2020-03-20', '2020-03-21', '2020-03-22', '2020-03-23']
-      },
-      series: [{
-        data: [6, 5, 3, 4, 7, 5, 2]
-      }]
-    })
-    // 基于准备好的dom，初始化echarts实例
-    searchPerChartIns = echarts.init(document.getElementById('searchPerChart'))
-    // 绘制图表
-    searchPerChartIns.setOption(searchOption)
-    searchPerChartIns.setOption({
-      xAxis: {
-        data: ['2020-03-17', '2020-03-18', '2020-03-19', '2020-03-20', '2020-03-21', '2020-03-22', '2020-03-23']
-      },
-      series: [{
-        data: [6, 5, 3, 4, 7, 5, 2]
-      }]
-    })
-    return () => {
-      if (lineChartIns) {
-        lineChartIns.dispose()
-      }
-      if (barChartIns) {
-        barChartIns.dispose()
-      }
-      if (saleTrendChartIns) {
-        saleTrendChartIns.dispose()
-      }
-      if (searchUserChartIns) {
-        searchUserChartIns.dispose()
-      }
-    }
   }, [])
 
   useEffect(() => {
@@ -324,7 +224,8 @@ function Dashboard (props) {
 
   return (
     <div className="main-content">
-      <Row gutter={16}>
+      <Summary isLoad={isLoad} summaryData={summaryData}/>
+      {/* <Row gutter={16}>
         <Col span={6} className="summary-item">
           <div className="inner">
             <Skeleton loading={isLoad} active>
@@ -413,10 +314,10 @@ function Dashboard (props) {
             </Skeleton>
           </div>
         </Col>
-      </Row>
+      </Row> */}
       <Tabs defaultActiveKey="1" tabBarExtraContent={tabBarExtraContent} onChange={() => {}}>
         <TabPane tab="销售额" key="1">
-          <Row gutter={16} className="tab-content">
+          {/* <Row gutter={16} className="tab-content">
             <Col span={16}>
               <div className="inner">
                 <p className="title">销售趋势</p>
@@ -439,13 +340,14 @@ function Dashboard (props) {
                 </List>
               </div>
             </Col>
-          </Row>
+          </Row> */}
+          <SaleTab saleTrend={saleTrend}/>
         </TabPane>
         <TabPane tab="访问量" key="2"></TabPane>
       </Tabs>
       <Row gutter={16}>
         <Col span={12} className="online-search">
-          <Card
+          {/* <Card
             title="线上热门搜索"
             extra={
               <Dropdown
@@ -499,10 +401,16 @@ function Dashboard (props) {
                 pagination={tablePageData}
               />
             </div>
-          </Card>
+          </Card> */}
+          <OnlineSearch 
+            tableData={tableData} 
+            tablePageData={tablePageData} 
+            handleTableChange={handleTableChange} 
+            searchUserOptions={searchUserOptions} 
+            searchPerOption={searchPerOption}/>
         </Col>
         <Col span={12} className="sale-per">
-          <Card 
+          {/* <Card 
             title="销售额类别占比"
             extra={
               <div className="operate">
@@ -543,7 +451,8 @@ function Dashboard (props) {
                 </ul>
               </Col>
             </Row>
-          </Card>
+          </Card> */}
+          <SaleType handleSaleTypeChange={handleSaleTypeChange} saleType={saleType} salePerData={saleType} toggleSaleTypeLegend={toggleSaleTypeLegend}/>
         </Col>
       </Row>
     </div>
