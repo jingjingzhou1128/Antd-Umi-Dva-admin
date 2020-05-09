@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Row, Col, List} from 'antd'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 
 import ComChart from '@/components/ComChart'
 
@@ -12,7 +12,7 @@ function SaleTab ({saleTrend}) {
   useEffect(() => {
     if (saleTrend) {
       let trendOptions = {...saleTrendOption}
-      trendOptions.xAxis.data = saleTrend.xAxis
+      trendOptions.xAxis.data = saleTrend.type
       trendOptions.series[0].data = saleTrend.value
       setTrendOptions(trendOptions)
     }
@@ -47,11 +47,11 @@ function SaleTab ({saleTrend}) {
 }
 
 SaleTab.propTypes = {
-  saleTrend: PropTypes.object.isRequired
+  // saleTrend: PropTypes.object.isRequired
 }
 
 SaleTab.defaultProps = {
-  saleTrend: {}
+  // saleTrend: {}
 }
 
 export default SaleTab

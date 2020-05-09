@@ -1,8 +1,10 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Row, Col, Tooltip, Card, Dropdown, Icon, Menu, Table } from 'antd'
 import PropTypes from 'prop-types'
 
 import ComChart from '@/components/ComChart'
+
+import {searchOption} from '../dataOptions'
 
 function OnlineSearch ({tableData, tablePageData, handleTableChange, searchUserOptions, searchPerOption}) {
   const tableColumns = [
@@ -27,6 +29,25 @@ function OnlineSearch ({tableData, tablePageData, handleTableChange, searchUserO
       sorter: true
     }
   ]
+
+  const [userData, setUserData] = useState(searchOption)
+  const [perData, setPerData] = useState(searchOption)
+
+  useEffect(() => {
+    if (!searchUserOptions) return
+    let options = {...searchOption}
+    options.xAxis.data = searchUserOptions.type
+    options.series[0].data = searchUserOptions.value
+    setUserData(options)
+  }, [searchUserOptions])
+
+  useEffect(() => {
+    if (!searchPerOption) return
+    let options = {...searchOption}
+    options.xAxis.data = searchPerOption.type
+    options.series[0].data = searchPerOption.value
+    setPerData(options)
+  }, [searchPerOption])
 
   return (
     <Card
@@ -56,7 +77,7 @@ function OnlineSearch ({tableData, tablePageData, handleTableChange, searchUserO
             <span>{window.toThousandFilter(12321, 0)}</span>
             <span>17.1<i className="iconfont icon-arrow-up-full text-danger"></i></span>
           </div>
-          <ComChart chartId="searchUserChart" chartOptions={searchUserOptions}/>
+          <ComChart chartId="searchUserChart" chartOptions={userData}/>
         </Col>
         <Col span={12}>
           <div className="type">
@@ -71,7 +92,7 @@ function OnlineSearch ({tableData, tablePageData, handleTableChange, searchUserO
             <span>2.7</span>
             <span>26.2<i className="iconfont icon-arrow-down-full text-success"></i></span>
           </div>
-          <ComChart chartId="searchPerChart" chartOptions={searchPerOption}/>
+          <ComChart chartId="searchPerChart" chartOptions={perData}/>
         </Col>
       </Row>
       <div className="table-wrapper">
@@ -90,9 +111,7 @@ function OnlineSearch ({tableData, tablePageData, handleTableChange, searchUserO
 OnlineSearch.propTypes = {
   tableData: PropTypes.array.isRequired,
   tablePageData: PropTypes.object.isRequired,
-  handleTableChange: PropTypes.func.isRequired,
-  searchUserOptions: PropTypes.object,
-  searchPerOption: PropTypes.object
+  handleTableChange: PropTypes.func.isRequired
 }
 
 OnlineSearch.defaultProps = {

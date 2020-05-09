@@ -88,6 +88,8 @@
     padding: 0;
     height: auto;
     line-height: 1;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.06);
+    z-index: 99;
     .navbar {
       height: 50px;
       padding: 0 20px;
@@ -135,13 +137,18 @@
     // text-align: center;
     background-color: #f1f1f1;
     // background-color: #fff;
-    .main-wrapper {
-      height: 100%;
-      overflow-y: auto;
-      background-color: #f1f1f1;
-      .main-content {
-        padding: 0 20px 20px;
-      }
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    .main-content {
+      padding: 20px;
     }
+    // .main-wrapper {
+    //   height: 100%;
+    //   overflow-y: auto;
+    //   background-color: #f1f1f1;
+    //   .main-content {
+    //     padding: 0 20px 20px;
+    //   }
+    // }
   }
 }

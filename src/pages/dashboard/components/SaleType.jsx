@@ -26,6 +26,7 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, salePerTotal}) 
   const [salePerOptions, setSalePerOptions] = useState(salePerOption)
 
   useEffect(() => {
+    if (!salePerData || !salePerTotal) return
     let salePerValue = salePerData.map((item, index) => ({
       ...item,
       selected: true,
@@ -33,14 +34,13 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, salePerTotal}) 
       itemStyle: {
         color: colors[index % colors.length]
       },
-      percent: ((item.value / salePerTotal) * 100).toFixed(2)
+      percent: salePerTotal === 0 ? 0 : ((item.value / salePerTotal) * 100).toFixed(2)
     }))
     setSalePerList(salePerValue)
-    setSalePerOptions(options => {
-      options.title.subtext = `￥ ${salePerTotal}`
-      options.series[0].data = salePerValue
-      return options
-    })
+    let options = {...salePerOption}
+    options.title.subtext = `￥ ${salePerTotal}`
+    options.series[0].data = salePerValue
+    setSalePerOptions(options)
   }, [salePerData, salePerTotal])
 
   function toggleSaleTypeLegend (name) {
@@ -50,12 +50,10 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, salePerTotal}) 
       return item
     })
     setSalePerList(salePerValue)
-    setSalePerOptions(options => {
-      options.series[0].data = salePerValue.filter(item => item.checked)
-      return options
-    })
+    let options = {...salePerOption}
+    options.series[0].data = salePerValue.filter(item => item.checked)
+    setSalePerOptions(options)
   }
-  console.log(salePerOptions)
   return (
     <Card 
       title="销售额类别占比"
@@ -105,9 +103,9 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, salePerTotal}) 
 
 SaleType.propTypes = {
   saleType: PropTypes.string.isRequired,
-  salePerData: PropTypes.array.isRequired,
+  // salePerData: PropTypes.array.isRequired,
   handleSaleTypeChange: PropTypes.func.isRequired,
-  salePerTotal: PropTypes.number.isRequired
+  // salePerTotal: PropTypes.number.isRequired
 }
 
 SaleType.defaultProps = {}
