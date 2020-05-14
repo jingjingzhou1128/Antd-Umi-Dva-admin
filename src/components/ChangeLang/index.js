@@ -1,4 +1,5 @@
-import {Dropdown, Menu, Icon} from 'antd'
+import {Dropdown, Menu} from 'antd'
+import {CaretDownOutlined} from '@ant-design/icons'
 import {connect} from 'dva'
 import { setLocale } from 'umi-plugin-react/locale'
 
@@ -31,7 +32,7 @@ function ChangeLang ({dispatch, app}) {
       )}>
       <span className="ant-dropdown-link">
         <span className="text"><i className="iconfont icon-language"></i></span>
-        <Icon type="caret-down"/>
+        <CaretDownOutlined />
       </span>
     </Dropdown>
   )

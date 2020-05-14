@@ -8,16 +8,16 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "antd": "^3.19.5",
+    "@ant-design/icons": "^4.1.0",
+    "antd": "^4.2.2",
     "axios": "^0.19.2",
     "babel-plugin-import": "^1.13.0",
     "dva": "^2.6.0-beta.6",
     "echarts": "^4.6.0",
-    "node-sass": "^4.13.1",
     "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "roadhog-api-doc": "^1.1.2"
   },
   "devDependencies": {
@@ -34,6 +34,7 @@
     "eslint-plugin-react": "^7.11.1",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
+    "node-sass": "^4.13.1",
     "prettier": "^1.19.1",
     "react-test-renderer": "^16.7.0",
     "sass-loader": "^8.0.2",

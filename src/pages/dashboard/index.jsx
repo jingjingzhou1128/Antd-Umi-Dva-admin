@@ -322,7 +322,7 @@ function Dashboard (props) {
   }
 
   return (
-    <div className="main-content">
+    <div className="main-wrapper">
       <Summary isLoad={isLoad} summaryData={summaryData}/>
       <Tabs defaultActiveKey="1" tabBarExtraContent={tabBarExtraContent} onChange={() => {}}>
         <TabPane tab="销售额" key="1">

@@ -1,4 +1,5 @@
-import {Dropdown, Menu, Icon} from 'antd'
+import {Dropdown, Menu} from 'antd'
+import {CaretDownOutlined} from '@ant-design/icons'
 import {connect} from 'dva'
 
 import {THEMES} from '@/utils'
@@ -30,7 +31,7 @@ function ChangeTheme ({dispatch, app}) {
       )}>
       <span className="ant-dropdown-link">
         <span className="text"><i className="iconfont icon-T-yanse"></i></span>
-        <Icon type="caret-down"/>
+        <CaretDownOutlined />
       </span>
     </Dropdown>
   )

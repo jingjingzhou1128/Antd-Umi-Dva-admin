@@ -40,34 +40,34 @@ export default [
         }
       },
       {
-        path: '/home/nest',
+        path: '/home/form',
         meta: {
           icon: 'icon-dashboard',
-          name: 'nest'
+          name: 'form'
         },
         routes: [
           {
-            path: '/home/nest/menu1',
-            component: './nest/menu1/index',
+            path: '/home/form/basic',
+            component: './form/basic/index',
             Routes: ['./src/routes/PermisRoute.js'],
-            title: 'UMI-Nest',
+            title: 'UMI-FORM',
             meta: {
               icon: 'icon-dashboard',
-              name: 'nestMenu1',
-              prmCode: 'NEST-MENU1'
-            }
-          },
-          {
-            path: '/home/nest/menu2',
-            component: './nest/menu2/index',
-            Routes: ['./src/routes/PermisRoute.js'],
-            title: 'UMI-Nest',
-            meta: {
-              icon: 'icon-dashboard',
-              name: 'nestMenu2',
-              prmCode: 'NEST-MENU2'
+              name: 'formBasic',
+              prmCode: 'FORM-BASIC'
             }
           }
+          // {
+          //   path: '/home/nest/menu2',
+          //   component: './nest/menu2/index',
+          //   Routes: ['./src/routes/PermisRoute.js'],
+          //   title: 'UMI-Nest',
+          //   meta: {
+          //     icon: 'icon-dashboard',
+          //     name: 'nestMenu2',
+          //     prmCode: 'NEST-MENU2'
+          //   }
+          // }
         ]
       }
     ]

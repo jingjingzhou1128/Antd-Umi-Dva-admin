@@ -1,4 +1,5 @@
-import {Dropdown, Menu, Icon} from 'antd'
+import {Dropdown, Menu} from 'antd'
+import {CaretDownOutlined} from '@ant-design/icons'
 import {connect} from 'dva'
 import router from 'umi/router'
 import {formatMessage} from 'umi-plugin-react/locale'
@@ -42,7 +43,7 @@ function Navbar ({dispatch, app}) {
             className="user-avatar">
             <span className="ant-dropdown-link">
               <img src={userAvatar} alt="User"/>
-              <Icon type="caret-down"/>
+              <CaretDownOutlined />
             </span>
           </Dropdown>
         </li>

@@ -48,14 +48,14 @@ export default delay({
       res.send({
         code: 200,
         flag: true,
-        result: ['UI', 'NEST-MENU1', 'NEST-MENU2'],
+        result: ['UI', 'FORM-BASIC'],
         msg: ''
       })
     } else {
       res.send({
         code: 200,
         flag: true,
-        result: ['NEST-MENU1', 'NEST-MENU2'],
+        result: ['FORM-BASIC'],
         msg: ''
       })
     }

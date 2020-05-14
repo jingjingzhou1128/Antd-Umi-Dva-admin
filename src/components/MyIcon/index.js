@@ -1,8 +1,8 @@
-import {Icon} from 'antd'
+import {createFromIconfontCN} from '@ant-design/icons'
 
 const iconfontUrl = '//at.alicdn.com/t/font_1087054_ninrmyjshp.js'
 
-const MyIcon = Icon.createFromIconfontCN({
+const MyIcon = createFromIconfontCN({
   scriptUrl: iconfontUrl
 })
 

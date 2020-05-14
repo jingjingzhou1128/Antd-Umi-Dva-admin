@@ -191,6 +191,9 @@
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     padding: 8px;
+    .ant-table-column-sorters {
+      padding: 0;
+    }
   }
 }
 .sale-per {

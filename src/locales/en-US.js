@@ -3,9 +3,8 @@ export default {
   'reactFrame.user.profile': 'Profile',
   'reactFrame.route.dashboard': 'Dashboard',
   'reactFrame.route.ui': 'UI',
-  'reactFrame.route.nest': 'Nest',
-  'reactFrame.route.nestMenu1': 'Menu1',
-  'reactFrame.route.nestMenu2': 'Menu2'
+  'reactFrame.route.form': 'FORM',
+  'reactFrame.route.formBasic': 'Form Basic'
   // reactFrame: {
   //   route: {
   //     dashboard: 'Dashboard',

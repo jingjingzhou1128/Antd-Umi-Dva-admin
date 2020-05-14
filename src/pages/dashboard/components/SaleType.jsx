@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {Row, Col, Card, Dropdown, Icon, Menu, Radio} from 'antd'
+import {Row, Col, Card, Dropdown, Menu, Radio} from 'antd'
+import {DashOutlined} from '@ant-design/icons'
 import PropTypes from 'prop-types'
 
 import {salePerOption, colors} from '../dataOptions'
@@ -71,7 +72,7 @@ function SaleType ({handleSaleTypeChange, saleType, salePerData, salePerTotal}) 
                 <Menu.Item>操作二</Menu.Item>
               </Menu>
             }>
-            <Icon type="dash" />
+            <DashOutlined />
           </Dropdown>
         </div>
       }>

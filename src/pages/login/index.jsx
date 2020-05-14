@@ -1,7 +1,6 @@
-import React, {Component} from 'react'
+import React, {useEffect} from 'react'
 import {Form, Input, Button, Checkbox} from 'antd'
 import router from 'umi/router'
-// import {connect} from 'dva'
 
 import MyIcon from '@/components/MyIcon'
 import userAjax from '@/services/user'
@@ -33,107 +32,85 @@ function uncompileStr (code) {
   return c
 }
 
-class Login extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      username: '',
-      password: ''
-    }
-  }
+function Login (props) {
+  const [loginForm] = Form.useForm()
 
-  componentDidMount () {
+  useEffect(() => {
     let username = localStorage.getItem('username')
     let password = localStorage.getItem('password')
+    let userInfo = {
+      username: '',
+      password: '',
+      isRember: false
+    }
     if (username) {
-      this.setState({
-        username: username
-      })
+      userInfo.username = username
     }
     if (password) {
-      this.setState({
-        password: uncompileStr(password)
-      })
+      userInfo.password = uncompileStr(password)
     }
-  }
+    loginForm.setFieldsValue(userInfo)
+  }, [loginForm])
 
   // 登录
-  handleLogin (e) {
-    e.preventDefault()
-    this.props.form.validateFields((err, values) => {
-      if (err) return
-      userAjax.login({username: values.username, password: values.password}).then(res => {
-        if (res.data.flag) {
-          window.notificationSuccess({
-            msg: 'Success',
-            desc: '登录成功！'
-          })
-          if (values.isRember) {
-            localStorage.setItem('username', values.username)
-            localStorage.setItem('password', compileStr(values.password))
-          } else {
-            localStorage.removeItem('username')
-            localStorage.removeItem('password')
-          }
-          sessionStorage.setItem('username', res.data.result.username)
-          router.push('/home/dashboard')
-        } else if (res.data.code === 'E0001') {
-          window.notificationError({
-            msg: 'Error',
-            desc: res.data.msg
-          })
+  function handleLogin (values) {
+    // console.log(values)
+    // console.log(this.state.loginData)
+    userAjax.login({username: values.username, password: values.password}).then(res => {
+      if (res.data.flag) {
+        window.notificationSuccess({
+          msg: 'Success',
+          desc: '登录成功！'
+        })
+        if (values.isRember) {
+          localStorage.setItem('username', values.username)
+          localStorage.setItem('password', compileStr(values.password))
+        } else {
+          localStorage.removeItem('username')
+          localStorage.removeItem('password')
         }
-      })
-      // this.props.dispatch({
-      //   type: 'user/setUsername',
-      //   username: values.username
-      // })
+        sessionStorage.setItem('username', res.data.result.username)
+        router.push('/home/dashboard')
+      } else if (res.data.code === 'E0001') {
+        window.notificationError({
+          msg: 'Error',
+          desc: res.data.msg
+        })
+      }
     })
   }
-  
-  render () {
-    const {getFieldDecorator} = this.props.form
-    return (
-      <div className="login">
-        <Form onSubmit={(e) => {this.handleLogin(e)}} className="login-form">
-          <Form.Item>
-            {getFieldDecorator('username', {
-              rules: [{required: true, message: 'Please input username'}],
-              initialValue: this.state.username
-            })(
-              <Input
-                prefix={<MyIcon type="icon-user"/>}
-                placeholder="Please input username"
-              />
-            )}
-          </Form.Item>
-          <Form.Item>
-            {getFieldDecorator('password', {
-              rules: [{required: true, message: 'Please input password'}],
-              initialValue: this.state.password
-            })(
-              <Input
-                prefix={<MyIcon type="icon-mima"/>}
-                type="password"
-                placeholder="Please input password"
-              />
-            )}
-          </Form.Item>
-          <Form.Item>
-            {getFieldDecorator('isRember', {
-              valuePropName: 'checked',
-              initialValue: false
-            })(
-              <Checkbox>Remember me</Checkbox>
-            )}
-            <Button type="primary" htmlType="submit" className="btn-login" block>Login</Button>
-          </Form.Item>
-        </Form>
-      </div>
-    )
-  }
+
+  return (
+    <div className="login">
+      <Form onFinish={handleLogin} form={loginForm} className="login-form">
+        <Form.Item
+          name="username"
+          rules={[{required: true, message: 'Please input username'}]}>
+          <Input
+            prefix={<MyIcon type="icon-user"/>}
+            placeholder="Please input username"
+          />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          rules={[{required: true, message: 'Please input password'}]}>
+          <Input
+            prefix={<MyIcon type="icon-mima"/>}
+            type="password"
+            placeholder="Please input password"
+          />
+        </Form.Item>
+        <Form.Item
+          name="isRember"
+          valuePropName="checked">
+          <Checkbox>Remember me</Checkbox>
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="btn-login" block>Login</Button>
+        </Form.Item>
+      </Form>
+    </div>
+  )
 }
 
-
-// export default connect(({user}) => ({user}))(Form.create({name: 'login_form'})(Login))
-export default Form.create({name: 'login_form'})(Login)
+export default Login

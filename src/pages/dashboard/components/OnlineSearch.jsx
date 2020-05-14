@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {Row, Col, Tooltip, Card, Dropdown, Icon, Menu, Table } from 'antd'
+import {Row, Col, Tooltip, Card, Dropdown, Menu, Table } from 'antd'
+import {DashOutlined} from '@ant-design/icons'
 import PropTypes from 'prop-types'
 
 import ComChart from '@/components/ComChart'
@@ -60,7 +61,7 @@ function OnlineSearch ({tableData, tablePageData, handleTableChange, searchUserO
               <Menu.Item>操作二</Menu.Item>
             </Menu>
           }>
-          <Icon type="dash" />
+          <DashOutlined />
         </Dropdown>
       }>
       <Row gutter={16}>
