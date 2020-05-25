@@ -121,6 +121,239 @@ function FormBasic (props) {
         console.log('change:', value)
       },
       filterOption: true
+    },
+    {
+      name: 'checkbox',
+      label: 'Checkbox',
+      rules: [{required: false}],
+      type: 'checkbox',
+      placeholder: 'Please select ...',
+      options: [
+        {
+          label: 'Check1',
+          value: 'check1'
+        },
+        {
+          label: 'Check2',
+          value: 'check2',
+          disabled: true
+        },
+        {
+          label: 'Check3',
+          value: 'check3'
+        }
+      ],
+      onChange: (value) => {
+        console.log('change:', value)
+      },
+      inputName: 'checkbox'
+    },
+    {
+      name: 'cascader',
+      label: 'Cascader',
+      rules: [{required: false}],
+      type: 'cascader',
+      placeholder: 'Please select ...',
+      allowClear: true,
+      options: [
+        {
+          label: 'Cascader1',
+          value: 'cascader1',
+          children: [
+            {
+              label: 'Cascader1-1',
+              value: 'cascader1-1'
+            },
+            {
+              label: 'Cascader1-2',
+              value: 'cascader1-2'
+            }
+          ]
+        },
+        {
+          label: 'Cascader2',
+          value: 'cascader2',
+          children: [
+            {
+              label: 'Cascader2-1',
+              value: 'cascader2-1'
+            },
+            {
+              label: 'Cascader2-2',
+              value: 'cascader2-2'
+            }
+          ]
+        },
+        {
+          label: 'Cascader3',
+          value: 'cascader3'
+        }
+      ],
+      onChange: (value) => {
+        console.log('change:', value)
+      }
+    },
+    {
+      name: 'date',
+      label: 'Date',
+      rules: [{required: false}],
+      type: 'date',
+      allowClear: true,
+      format: 'YYYY-MM-DD'
+    },
+    {
+      name: 'week',
+      label: 'Week',
+      rules: [{required: false}],
+      type: 'week',
+      allowClear: true,
+      format: 'YYYY-wo'
+    },
+    {
+      name: 'month',
+      label: 'Month',
+      rules: [{required: false}],
+      type: 'month',
+      allowClear: true,
+      format: 'YYYY-MM'
+    },
+    {
+      name: 'quarter',
+      label: 'Quarter',
+      rules: [{required: false}],
+      type: 'quarter',
+      allowClear: true
+    },
+    {
+      name: 'year',
+      label: 'Year',
+      rules: [{required: false}],
+      type: 'year',
+      allowClear: true,
+      format: 'YYYY'
+    },
+    {
+      name: 'range',
+      label: 'Range',
+      rules: [{required: false}],
+      type: 'range',
+      picker: 'date',
+      allowClear: true,
+      format: 'YYYY-MM-DD HH:mm:ss',
+      showTime: true
+    },
+    {
+      name: 'rate',
+      label: 'Rate',
+      rules: [{required: false}],
+      type: 'rate',
+      allowHalf: true,
+      allowClear: true,
+      count: 5
+    },
+    {
+      name: 'radio',
+      label: 'Radio',
+      rules: [{required: false}],
+      type: 'radio',
+      options: [
+        {
+          label: 'Radio1',
+          value: 'radio1'
+        },
+        {
+          label: 'Radio2',
+          value: 'radio2'
+        },
+        {
+          label: 'Radio3',
+          value: 'radio3'
+        }
+      ],
+      inputName: 'radio',
+      count: 5,
+      onChange: (value) => {
+        console.log(value)
+      }
+    },
+    {
+      name: 'switch',
+      label: 'Switch',
+      rules: [{required: false}],
+      type: 'switch',
+      valuePropName: 'checked',
+      onChange: (value) => {
+        console.log(value)
+      }
+    },
+    {
+      name: 'select',
+      label: 'Select',
+      rules: [{required: false}],
+      type: 'select',
+      placeholder: 'Please select ...',
+      allowClear: true,
+      filterOption: true,
+      options: [
+        {
+          label: 'Select1',
+          value: 'select1'
+        },
+        {
+          label: 'Select2',
+          value: 'select2'
+        },
+        {
+          label: 'Select3',
+          value: 'select3'
+        }
+      ],
+      onChange: (value) => {
+        console.log(value)
+      }
+    },
+    {
+      name: 'select2',
+      label: 'Select2',
+      rules: [{required: false}],
+      type: 'select',
+      placeholder: 'Please select ...',
+      allowClear: true,
+      filterOption: true,
+      options: [
+        {
+          label: 'Select1',
+          value: 'select1'
+        },
+        {
+          label: 'Select2',
+          value: 'select2'
+        },
+        {
+          label: 'Select3',
+          value: 'select3'
+        }
+      ],
+      onChange: (value) => {
+        console.log(value)
+      },
+      mode: 'tags'
+    },
+    {
+      name: 'time',
+      label: 'Time',
+      rules: [{required: false}],
+      type: 'time',
+      allowClear: true,
+      format: 'HH:mm:ss'
+    },
+    {
+      name: 'timeRange',
+      label: 'TimeRange',
+      rules: [{required: false}],
+      type: 'timeRange',
+      allowClear: true,
+      format: 'HH:mm:ss'
     }
   ]
   const formFunc = {

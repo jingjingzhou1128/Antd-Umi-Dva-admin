@@ -13,7 +13,8 @@ import {
   Radio,
   Switch,
   Select,
-  TimePicker
+  TimePicker,
+  Upload
 } from 'antd'
 
 const { RangePicker } = DatePicker
@@ -80,7 +81,7 @@ function ComForm ({formInputs, formFunc, formClass}) {
       return (<Checkbox.Group
         disabled={item.disabled} 
         options={item.options}
-        name={item.name}
+        name={item.inputName}
         onChange={item.onChange}
       />)
     } else if (item.type === 'cascader') {
@@ -99,16 +100,8 @@ function ComForm ({formInputs, formFunc, formClass}) {
         allowClear={item.allowClear}
         picker={item.type}
         format={item.format}
-      />)
-    } else if (item.type === 'date' || item.type === 'week' || item.type === 'month' || item.type === 'quarter' || item.type === 'year') {
-      return (<DatePicker
-        placeholder={item.placeholder} 
-        disabled={item.disabled}
-        allowClear={item.allowClear}
-        picker={item.type}
-        format={item.format}
-        separator={item.separator}
         showTime={item.showTime}
+        disabledDate={item.disabledDate}
       />)
     } else if (item.type === 'range') {
       return (<RangePicker
@@ -119,6 +112,7 @@ function ComForm ({formInputs, formFunc, formClass}) {
         format={item.format}
         separator={item.separator}
         showTime={item.showTime}
+        disabledDate={item.disabledDate}
       />)
     } else if (item.type === 'rate') {
       return (<Rate
@@ -130,12 +124,14 @@ function ComForm ({formInputs, formFunc, formClass}) {
     } else if (item.type === 'radio') {
       return (<Radio.Group
         disabled={item.disabled}
-        name={item.name}
+        name={item.inputName}
         options={item.options}
+        onChange={item.onChange}
       />)
     } else if (item.type === 'switch') {
       return (<Switch
         disabled={item.disabled}
+        onChange={item.onChange}
       />)
     } else if (item.type === 'select') {
       return (<Select
@@ -145,6 +141,7 @@ function ComForm ({formInputs, formFunc, formClass}) {
         filterOption={item.filterOption}
         notFoundContent={item.notFoundContent}
         mode={item.mode}
+        onChange={item.onChange}
       >
         {item.options.map(option => (
           <Select.Option key={option.value} value={option.value}>{option.label}</Select.Option>
@@ -157,6 +154,30 @@ function ComForm ({formInputs, formFunc, formClass}) {
         allowClear={item.allowClear}
         clearText={item.clearText}
         format={item.format}
+      />)
+    } else if (item.type === 'timeRange') {
+      return (<TimePicker.RangePicker
+        placeholder={item.placeholder} 
+        disabled={item.disabled}
+        allowClear={item.allowClear}
+        picker={item.picker}
+        format={item.format}
+        separator={item.separator}
+        showTime={item.showTime}
+        disabledDate={item.disabledDate}
+        order={true}
+      />)
+    } else if (item.type === 'imgUpload') {
+      return (<Upload
+        placeholder={item.placeholder} 
+        disabled={item.disabled}
+        allowClear={item.allowClear}
+        picker={item.picker}
+        format={item.format}
+        separator={item.separator}
+        showTime={item.showTime}
+        disabledDate={item.disabledDate}
+        order={true}
       />)
     }
   }

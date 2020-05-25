@@ -1,8 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {Layout} from 'antd'
+import {Layout, ConfigProvider} from 'antd'
 import {connect} from 'dva'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+
+import antdEnUS from 'antd/es/locale/en_US'
+import antdZhCN from 'antd/es/locale/zh_CN'
 
 import Navbar from '@/components/Navbar'
 import Sidebar from '@/components/Sidebar'
@@ -122,22 +125,24 @@ function BasicLayout({app, dispatch, children, location}) {
   }, [dispatch, app.device, app.collapsed])
 
   return (
-    <Layout id="app">
-      {app.device === 'mobile' && !app.collapsed &&
-        <div className="backstage" onClick={() => {dispatch({type: 'app/closeSidebar'})}}></div>
-      }
-      <Sider collapsed={app.collapsed} collapsible trigger={null} className={`sidebar ${app.device}`}>
-        <Sidebar menus={menus}/>
-      </Sider>
-      <Layout>
-        <Header className="app-header">
-          <Navbar/>
-        </Header>
-        <Content className="app-main">
-          {children}
-        </Content>
+    <ConfigProvider locale={app.lang === 'zh-CN' ? antdZhCN : antdEnUS}>
+      <Layout id="app">
+        {app.device === 'mobile' && !app.collapsed &&
+          <div className="backstage" onClick={() => {dispatch({type: 'app/closeSidebar'})}}></div>
+        }
+        <Sider collapsed={app.collapsed} collapsible trigger={null} className={`sidebar ${app.device}`}>
+          <Sidebar menus={menus}/>
+        </Sider>
+        <Layout>
+          <Header className="app-header">
+            <Navbar/>
+          </Header>
+          <Content className="app-main">
+            {children}
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   )
 }
 
