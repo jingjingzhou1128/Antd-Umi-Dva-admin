@@ -1,7 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 import ComBreadcrumb from '@/components/ComBreadcrumb'
 import ComForm from '@/components/ComForm'
+
+import {validateImage} from '@/utils/validate'
 
 import './index.scss'
 
@@ -51,19 +53,7 @@ function FormBasic (props) {
     ]
   }
 
-  // /**
-  //  * @author zhoujingjing
-  //  * @description 表单实列
-  //  */
-  // const [formInstance] = Form.useForm()
-
-  // /**
-  //  * @author zhoujingjing
-  //  * @description 提交表单
-  //  */
-  // function handleSubmit (values) {}
-
-  const formInputs = [
+  const [formInputs, setFormInputs] = useState([
     {
       name: 'title',
       label: '标题',
@@ -354,8 +344,64 @@ function FormBasic (props) {
       type: 'timeRange',
       allowClear: true,
       format: 'HH:mm:ss'
+    },
+    {
+      name: 'imgUpload',
+      label: 'ImgUpload',
+      rules: [{required: false}],
+      type: 'imgUpload',
+      action: `${window.config.baseUrl}/file/upload`,
+      beforeUpload: (file, fileList) => {
+        if (!validateImage(file.type)) {
+          window.messageError({
+            content: '请上传正确的图片格式！'
+          })
+          return false
+        }
+        return true
+      },
+      onChange: changeImg,
+      valuePropName: 'fileList',
+      imageUrl: '',
+      inputName: 'avatar',
+      getValueFromEvent: (e) => {
+        if (Array.isArray(e)) {
+          return e
+        }
+        if (e.file.status === 'done' && e.file.response.flag) {
+          return e.file.response.result.fileUrl
+        }
+        return e && e.fileList
+      }
+    },
+    {
+      name: 'transfer',
+      label: 'Transfer',
+      rules: [{required: false}],
+      type: 'transfer',
+      dataSource: [
+        {
+          key: 1,
+          title: 'Label1'
+        },
+        {
+          key: 2,
+          title: 'Label2'
+        },
+        {
+          key: 3,
+          title: 'Label3'
+        },
+        {
+          key: 4,
+          title: 'Label4'
+        }
+      ],
+      targetKeys: [],
+      selectedKeys: [],
+      render: item => item.title
     }
-  ]
+  ])
   const formFunc = {
     submitText: '提交',
     submitFunc: (values) => {console.log(values)},
@@ -372,6 +418,14 @@ function FormBasic (props) {
     },
     formBtnLayout: {
       wrapperCol: { offset: 6, span: 12 },
+    }
+  }
+
+  function changeImg (file) {
+    let tmpFormInputs = [...formInputs]
+    if (file.file.status === 'done' && file.file.response.flag) {
+      tmpFormInputs[20].imageUrl = file.file.response.result.fileUrl
+      setFormInputs(tmpFormInputs)
     }
   }
 

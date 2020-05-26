@@ -14,8 +14,11 @@ import {
   Switch,
   Select,
   TimePicker,
-  Upload
+  Upload,
+  Transfer
 } from 'antd'
+
+import './index.scss'
 
 const { RangePicker } = DatePicker
 
@@ -169,24 +172,71 @@ function ComForm ({formInputs, formFunc, formClass}) {
       />)
     } else if (item.type === 'imgUpload') {
       return (<Upload
-        placeholder={item.placeholder} 
+        className="img-uploader"
         disabled={item.disabled}
-        allowClear={item.allowClear}
-        picker={item.picker}
-        format={item.format}
-        separator={item.separator}
-        showTime={item.showTime}
-        disabledDate={item.disabledDate}
-        order={true}
+        listType="picture-card"
+        showUploadList={false}
+        action={item.action}
+        beforeUpload={item.beforeUpload}
+        onChange={item.onChange}
+        accept={item.accept}
+        method={item.method || 'post'}
+        customRequest={item.customRequest}
+        data={item.data}
+        headers={item.headers}
+        multiple={false}
+        name={item.inputName || 'file'}
+        withCredentials={true}
+      >
+        {
+          item.imageUrl ? <img src={item.imageUrl} alt=""/> : <i className="iconfont icon-plus"></i>
+        }
+      </Upload>)
+    } else if (item.type === 'transfer') {
+      return (<Transfer
+        className="form-item-transfer"
+        dataSource={item.dataSource} 
+        disabled={item.disabled}
+        titles={item.titles}
+        targetKeys={item.targetKeys}
+        selectedKeys={item.selectedKeys}
+        onChange={item.onChange}
+        onSelectChange={item.onSelectChange}
+        onScroll={item.onScroll}
+        render={item.render}
+        operations={item.operations}
+        showSelectAll={true}
+        rowKey={item.rowKey}
       />)
     }
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 提交表单
+   */
+  function handleFinish (values) {
+    if (formFunc.submitFunc) {
+      formFunc.submitFunc(values)
+    }
+  }
+  
+  /**
+   * @author zhoujingjing
+   * @description 重置表单
+   */
+  function handleReset () {
+    if (formFunc.resetFunc) {
+      formFunc.resetFunc()
+    }
+    formInstance.resetFields()
   }
 
   return (
     <Form
       form={formInstance}
       name={formClass.formName}
-      onFinish={formFunc.submitFunc}
+      onFinish={handleFinish}
       layout={formClass.formLayout}
       {...formClass.formItemLayout}
       className={['com-form', formClass.formClass]}>
@@ -197,14 +247,15 @@ function ComForm ({formInputs, formFunc, formClass}) {
               label={item.label}
               rules={item.rules}
               key={index}
-              valuePropName={item.valuePropName || 'value'}>
+              valuePropName={item.valuePropName || 'value'}
+              getValueFromEvent={item.getValueFromEvent}>
                 {generateFormItem(item)}
             </Form.Item>
           ))
         }
         <Form.Item {...formClass.formBtnLayout}>
           <Button type="primary" htmlType="submit">{formFunc.submitText}</Button>
-          <Button htmlType="button">{formFunc.resetText}</Button>
+          <Button htmlType="button" onClick={handleReset}>{formFunc.resetText}</Button>
         </Form.Item>
     </Form>
   )

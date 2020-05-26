@@ -86,3 +86,7 @@
 .icon-xiaoxi:before {
   content: "\e62e";
 }
+
+.icon-plus:before {
+  content: "\e613";
+}
