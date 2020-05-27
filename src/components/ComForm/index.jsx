@@ -15,7 +15,9 @@ import {
   Select,
   TimePicker,
   Upload,
-  Transfer
+  Transfer,
+  TreeSelect,
+  Tree
 } from 'antd'
 
 import './index.scss'
@@ -207,6 +209,43 @@ function ComForm ({formInputs, formFunc, formClass}) {
         operations={item.operations}
         showSelectAll={true}
         rowKey={item.rowKey}
+      />)
+    } else if (item.type === 'treeSelect') {
+      return (<TreeSelect
+        showSearch={item.showSearch} 
+        disabled={item.disabled}
+        placeholder={item.placeholder}
+        allowClear={item.allowClear}
+        treeDefaultExpandAll={item.treeDefaultExpandAll}
+        onChange={item.onChange}
+        filterTreeNode={item.filterTreeNode}
+        multiple={item.multiple}
+        treeCheckable={item.treeCheckable}
+        treeData={item.treeData}
+        children={item.children}
+        treeNodeLabelProp={item.treeNodeLabelProp}
+        treeNodeFilterProp={item.treeNodeFilterProp}
+      />)
+    } else if (item.type === 'tree') {
+      return (<Tree
+        autoExpandParent={item.autoExpandParent}
+        blockNode={true}
+        disabled={item.disabled}
+        checkable={item.checkable}
+        checkedKeys={item.checkedKeys}
+        filterTreeNode={item.filterTreeNode}
+        loadData={item.loadData}
+        loadedKeys={item.loadedKeys}
+        multiple={item.multiple}
+        selectable={item.selectable}
+        selectedKeys={item.selectedKeys}
+        showIcon={item.showIcon}
+        showLine={item.showLine}
+        treeData={item.treeData}
+        onCheck={item.onCheck}
+        onExpand={item.onExpand}
+        onLoad={item.onLoad}
+        onSelect={item.onSelect}
       />)
     }
   }

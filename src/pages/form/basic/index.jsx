@@ -381,27 +381,128 @@ function FormBasic (props) {
       type: 'transfer',
       dataSource: [
         {
-          key: 1,
+          key: '1',
           title: 'Label1'
         },
         {
-          key: 2,
+          key: '2',
           title: 'Label2'
         },
         {
-          key: 3,
+          key: '3',
           title: 'Label3'
         },
         {
-          key: 4,
+          key: '4',
           title: 'Label4'
         }
       ],
-      targetKeys: [],
-      selectedKeys: [],
-      render: item => item.title
+      targetKeys: ['1'],
+      selectedKeys: ['2'],
+      render: item => item.title,
+      valuePropName: 'targetKeys',
+      onChange: transferChange,
+      onSelectChange: transferSelectChange
+    },
+    {
+      name: 'treeSelect',
+      label: 'TreeSelect',
+      rules: [{required: false}],
+      type: 'treeSelect',
+      treeData: [
+        {
+          title: 'Node1',
+          value: '0-0',
+          children: [
+            {
+              title: 'Child Node1',
+              value: '0-0-1'
+            },
+            {
+              title: 'Child Node2',
+              value: '0-0-2'
+            }
+          ]
+        },
+        {
+          title: 'Node2',
+          value: '0-1'
+        }
+      ],
+      showSearch: true,
+      placeholder: 'Please select ...',
+      allowClear: true,
+      treeDefaultExpandAll: false,
+      treeCheckable: true,
+      onChange: (value) => {
+        console.log(value)
+      }
     }
+    // {
+    //   name: 'tree',
+    //   label: 'Tree',
+    //   rules: [{required: false}],
+    //   type: 'tree',
+    //   treeData: [
+    //     {
+    //       title: 'parent 1',
+    //       key: '0-0',
+    //       children: [
+    //         {
+    //           title: 'parent 1-0',
+    //           key: '0-0-0',
+    //           children: [
+    //             {
+    //               title: 'leaf',
+    //               key: '0-0-0-0'
+    //             },
+    //             {
+    //               title: 'leaf',
+    //               key: '0-0-0-1'
+    //             }
+    //           ]
+    //         },
+    //         {
+    //           title: 'parent 1-1',
+    //           key: '0-0-1',
+    //           children: [
+    //             {
+    //               title: 'leaf',
+    //               key: '0-0-1-0'
+    //             },
+    //             {
+    //               title: 'leaf',
+    //               key: '0-0-1-1'
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     }
+    //   ],
+    //   // checkable: true,
+    //   // checkedKeys: ['0-0-0-1'],
+    //   selectable: true,
+    //   selectedKeys: '',
+    //   showLine: false,
+    //   multiple: false,
+    //   onCheck: changeTreeCheck,
+    //   onSelect: changeTreeSelect,
+    //   valuePropName: 'selectedKeys'
+    // }
   ])
+
+  function changeTreeCheck (checkedKeys) {
+    let tmpFormInputs = [...formInputs]
+    tmpFormInputs[23].checkedKeys = checkedKeys
+    setFormInputs(tmpFormInputs)
+  }
+
+  function changeTreeSelect (selectedKeys) {
+    let tmpFormInputs = [...formInputs]
+    tmpFormInputs[23].selectedKeys = selectedKeys
+    setFormInputs(tmpFormInputs)
+  }
+
   const formFunc = {
     submitText: '提交',
     submitFunc: (values) => {console.log(values)},
@@ -427,6 +528,18 @@ function FormBasic (props) {
       tmpFormInputs[20].imageUrl = file.file.response.result.fileUrl
       setFormInputs(tmpFormInputs)
     }
+  }
+
+  function transferChange (nextTargetKeys, direction, moveKeys) {
+    let tmpFormInputs = [...formInputs]
+    tmpFormInputs[21].targetKeys = [nextTargetKeys]
+    setFormInputs(tmpFormInputs)
+  }
+
+  function transferSelectChange (sourceSelectedKeys, targetSelectedKeys) {
+    let tmpFormInputs = [...formInputs]
+    tmpFormInputs[21].selectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys]
+    setFormInputs(tmpFormInputs)
   }
 
   return (
