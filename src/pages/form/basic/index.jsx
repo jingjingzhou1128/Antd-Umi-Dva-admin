@@ -5,6 +5,8 @@ import ComForm from '@/components/ComForm'
 
 import {validateImage} from '@/utils/validate'
 
+// import {Button} from 'antd'
+
 import './index.scss'
 
 function FormBasic (props) {
@@ -13,23 +15,6 @@ function FormBasic (props) {
   //  * @description 表单布局方式
   //  */
   // const [formLayout, setFormLayout] = useState('horizontal')
-
-  // /**
-  //  * @author zhoujingjing
-  //  * @description 表单标签、输入框布局
-  //  */
-  // const formItemlayout = {
-  //   labelCol: { span: 6 },
-  //   wrapperCol: { span: 12 },
-  // }
-
-  // /**
-  //  * @author zhoujingjing
-  //  * @description 表单按钮布局
-  //  */
-  // const formBtnLayout = {
-  //   wrapperCol: { offset: 6, span: 12 },
-  // }
 
   /**
    * @author zhoujingjing
@@ -53,36 +38,53 @@ function FormBasic (props) {
     ]
   }
 
+  // const formRef = useRef()
+
+  /**
+   * @author zhoujingjing
+   * @description 表单验证规则
+   */
+  const formRules = {
+    text: [{required: true, message: 'Please input', validateTrigger: ['onBlur']}],
+    textarea: [{required: false}]
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 表单值
+   */
+  const [formValues, setFormValues] = useState({})
+
+  /**
+   * @author zhoujingjing
+   * @description 表单输入项
+   */
   const [formInputs, setFormInputs] = useState([
     {
-      name: 'title',
-      label: '标题',
-      rules: [{required: true, message: 'Please input title'}],
+      name: 'text',
+      label: 'Text',
       type: 'text',
-      placeholder: 'Please input title'
+      placeholder: 'Please input'
     },
     {
-      name: 'desc',
-      label: '描述',
-      rules: [{required: false}],
+      name: 'textarea',
+      label: 'Textarea',
       type: 'textarea',
-      placeholder: 'Please input description',
+      placeholder: 'Please input',
       autoSize: { minRows: 4, maxRows: 6 }
     },
     {
       name: 'password',
-      label: '密码',
-      rules: [{required: false}],
+      label: 'Password',
       type: 'password',
-      placeholder: 'Please input password',
+      placeholder: 'Please input',
       visibilityToggle: true
     },
     {
       name: 'number',
-      label: '权重',
-      rules: [{required: false}],
+      label: 'Number',
       type: 'number',
-      placeholder: 'Please input weight',
+      placeholder: 'Please input',
       precision: 0,
       min: 0,
       max: 6,
@@ -91,7 +93,6 @@ function FormBasic (props) {
     {
       name: 'autoComplete',
       label: 'AutoComplete',
-      rules: [{required: false}],
       type: 'autoComplete',
       placeholder: '',
       options: [
@@ -115,7 +116,6 @@ function FormBasic (props) {
     {
       name: 'checkbox',
       label: 'Checkbox',
-      rules: [{required: false}],
       type: 'checkbox',
       placeholder: 'Please select ...',
       options: [
@@ -141,7 +141,6 @@ function FormBasic (props) {
     {
       name: 'cascader',
       label: 'Cascader',
-      rules: [{required: false}],
       type: 'cascader',
       placeholder: 'Please select ...',
       allowClear: true,
@@ -186,7 +185,6 @@ function FormBasic (props) {
     {
       name: 'date',
       label: 'Date',
-      rules: [{required: false}],
       type: 'date',
       allowClear: true,
       format: 'YYYY-MM-DD'
@@ -194,7 +192,6 @@ function FormBasic (props) {
     {
       name: 'week',
       label: 'Week',
-      rules: [{required: false}],
       type: 'week',
       allowClear: true,
       format: 'YYYY-wo'
@@ -202,7 +199,6 @@ function FormBasic (props) {
     {
       name: 'month',
       label: 'Month',
-      rules: [{required: false}],
       type: 'month',
       allowClear: true,
       format: 'YYYY-MM'
@@ -210,14 +206,12 @@ function FormBasic (props) {
     {
       name: 'quarter',
       label: 'Quarter',
-      rules: [{required: false}],
       type: 'quarter',
       allowClear: true
     },
     {
       name: 'year',
       label: 'Year',
-      rules: [{required: false}],
       type: 'year',
       allowClear: true,
       format: 'YYYY'
@@ -225,7 +219,6 @@ function FormBasic (props) {
     {
       name: 'range',
       label: 'Range',
-      rules: [{required: false}],
       type: 'range',
       picker: 'date',
       allowClear: true,
@@ -235,7 +228,6 @@ function FormBasic (props) {
     {
       name: 'rate',
       label: 'Rate',
-      rules: [{required: false}],
       type: 'rate',
       allowHalf: true,
       allowClear: true,
@@ -244,7 +236,6 @@ function FormBasic (props) {
     {
       name: 'radio',
       label: 'Radio',
-      rules: [{required: false}],
       type: 'radio',
       options: [
         {
@@ -269,7 +260,6 @@ function FormBasic (props) {
     {
       name: 'switch',
       label: 'Switch',
-      rules: [{required: false}],
       type: 'switch',
       valuePropName: 'checked',
       onChange: (value) => {
@@ -279,7 +269,6 @@ function FormBasic (props) {
     {
       name: 'select',
       label: 'Select',
-      rules: [{required: false}],
       type: 'select',
       placeholder: 'Please select ...',
       allowClear: true,
@@ -305,7 +294,6 @@ function FormBasic (props) {
     {
       name: 'select2',
       label: 'Select2',
-      rules: [{required: false}],
       type: 'select',
       placeholder: 'Please select ...',
       allowClear: true,
@@ -332,7 +320,6 @@ function FormBasic (props) {
     {
       name: 'time',
       label: 'Time',
-      rules: [{required: false}],
       type: 'time',
       allowClear: true,
       format: 'HH:mm:ss'
@@ -340,7 +327,6 @@ function FormBasic (props) {
     {
       name: 'timeRange',
       label: 'TimeRange',
-      rules: [{required: false}],
       type: 'timeRange',
       allowClear: true,
       format: 'HH:mm:ss'
@@ -348,7 +334,6 @@ function FormBasic (props) {
     {
       name: 'imgUpload',
       label: 'ImgUpload',
-      rules: [{required: false}],
       type: 'imgUpload',
       action: `${window.config.baseUrl}/file/upload`,
       beforeUpload: (file, fileList) => {
@@ -377,7 +362,6 @@ function FormBasic (props) {
     {
       name: 'transfer',
       label: 'Transfer',
-      rules: [{required: false}],
       type: 'transfer',
       dataSource: [
         {
@@ -397,17 +381,12 @@ function FormBasic (props) {
           title: 'Label4'
         }
       ],
-      targetKeys: ['1'],
-      selectedKeys: ['2'],
       render: item => item.title,
-      valuePropName: 'targetKeys',
-      onChange: transferChange,
-      onSelectChange: transferSelectChange
+      valuePropName: 'targetKeys'
     },
     {
       name: 'treeSelect',
       label: 'TreeSelect',
-      rules: [{required: false}],
       type: 'treeSelect',
       treeData: [
         {
@@ -437,78 +416,70 @@ function FormBasic (props) {
       onChange: (value) => {
         console.log(value)
       }
+    },
+    {
+      name: 'tree',
+      label: 'Tree',
+      type: 'tree',
+      treeData: [
+        {
+          title: 'parent 1',
+          key: '0-0',
+          children: [
+            {
+              title: 'parent 1-0',
+              key: '0-0-0',
+              children: [
+                {
+                  title: 'leaf',
+                  key: '0-0-0-0'
+                },
+                {
+                  title: 'leaf',
+                  key: '0-0-0-1'
+                }
+              ]
+            },
+            {
+              title: 'parent 1-1',
+              key: '0-0-1',
+              children: [
+                {
+                  title: 'leaf',
+                  key: '0-0-1-0'
+                },
+                {
+                  title: 'leaf',
+                  key: '0-0-1-1'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      checkable: true,
+      selectable: false,
+      showLine: false,
+      multiple: true,
+      valuePropName: 'checkedKeys'
     }
-    // {
-    //   name: 'tree',
-    //   label: 'Tree',
-    //   rules: [{required: false}],
-    //   type: 'tree',
-    //   treeData: [
-    //     {
-    //       title: 'parent 1',
-    //       key: '0-0',
-    //       children: [
-    //         {
-    //           title: 'parent 1-0',
-    //           key: '0-0-0',
-    //           children: [
-    //             {
-    //               title: 'leaf',
-    //               key: '0-0-0-0'
-    //             },
-    //             {
-    //               title: 'leaf',
-    //               key: '0-0-0-1'
-    //             }
-    //           ]
-    //         },
-    //         {
-    //           title: 'parent 1-1',
-    //           key: '0-0-1',
-    //           children: [
-    //             {
-    //               title: 'leaf',
-    //               key: '0-0-1-0'
-    //             },
-    //             {
-    //               title: 'leaf',
-    //               key: '0-0-1-1'
-    //             }
-    //           ]
-    //         }
-    //       ]
-    //     }
-    //   ],
-    //   // checkable: true,
-    //   // checkedKeys: ['0-0-0-1'],
-    //   selectable: true,
-    //   selectedKeys: '',
-    //   showLine: false,
-    //   multiple: false,
-    //   onCheck: changeTreeCheck,
-    //   onSelect: changeTreeSelect,
-    //   valuePropName: 'selectedKeys'
-    // }
   ])
 
-  function changeTreeCheck (checkedKeys) {
-    let tmpFormInputs = [...formInputs]
-    tmpFormInputs[23].checkedKeys = checkedKeys
-    setFormInputs(tmpFormInputs)
-  }
-
-  function changeTreeSelect (selectedKeys) {
-    let tmpFormInputs = [...formInputs]
-    tmpFormInputs[23].selectedKeys = selectedKeys
-    setFormInputs(tmpFormInputs)
-  }
-
+  /**
+   * @author zhoujingjing
+   * @description 表单方法
+   */
   const formFunc = {
     submitText: '提交',
     submitFunc: (values) => {console.log(values)},
     resetText: '重置',
-    resetFunc: () => {}
+    resetFunc: resetForm
   }
+
+  /**
+   * @author zhoujingjing
+   * @description 表单样式
+   */
   const formClass = {
     formName: 'basicForm',
     formClass: 'basic-form',
@@ -522,6 +493,11 @@ function FormBasic (props) {
     }
   }
 
+  /**
+   * @author zhoujingjing
+   * @description 图片上传更改回调方法
+   * @param {*} file 
+   */
   function changeImg (file) {
     let tmpFormInputs = [...formInputs]
     if (file.file.status === 'done' && file.file.response.flag) {
@@ -530,23 +506,27 @@ function FormBasic (props) {
     }
   }
 
-  function transferChange (nextTargetKeys, direction, moveKeys) {
+  /**
+   * @author zhoujingjing
+   * @description 重置表单
+   */
+  function resetForm () {
     let tmpFormInputs = [...formInputs]
-    tmpFormInputs[21].targetKeys = [nextTargetKeys]
+    tmpFormInputs[20].imageUrl = ''
     setFormInputs(tmpFormInputs)
   }
 
-  function transferSelectChange (sourceSelectedKeys, targetSelectedKeys) {
-    let tmpFormInputs = [...formInputs]
-    tmpFormInputs[21].selectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys]
-    setFormInputs(tmpFormInputs)
-  }
+  // function test () {
+  //   console.log(formRef.current.getValue('text'))
+  // }
 
   return (
     <div className="main-wrapper">
       <ComBreadcrumb navData={navData}/>
       <div className="main-content">
-        <ComForm formInputs={formInputs} formFunc={formFunc} formClass={formClass}/>
+        {/* <Button onClick={test}>test</Button> */}
+        {/*  ref={formRef} */}
+        <ComForm formInputs={formInputs} formRules={formRules} formValues={formValues} formFunc={formFunc} formClass={formClass}/>
         {/* <Form
           form={formInstance}
           name="basicForm"

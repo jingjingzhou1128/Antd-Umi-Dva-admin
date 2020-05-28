@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, forwardRef, useImperativeHandle} from 'react'
 import PropTypes from 'prop-types'
 import {
   Form, 
@@ -24,12 +24,42 @@ import './index.scss'
 
 const { RangePicker } = DatePicker
 
-function ComForm ({formInputs, formFunc, formClass}) {
+const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formClass}, ref) => {
   /**
    * @author zhoujingjing
    * @description 表单实列
    */
   const [formInstance] = Form.useForm()
+
+  /**
+   * @author zhoujingjing
+   * @description 更改树选中值
+   */
+  function changeTreeSelectedKeys (selectedKeys, name) {
+    let values = []
+    values[`${name}`] = selectedKeys
+    formInstance.setFieldsValue(values)
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 更改树复选框选中值
+   */
+  function changeTreeCheckedKeys (checkedKeys, name) {
+    let values = []
+    values[`${name}`] = checkedKeys
+    formInstance.setFieldsValue(values)
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 更改穿梭框targetKeys
+   */
+  function changeTransferTargetKeys (targetKeys, name) {
+    let values = []
+    values[`${name}`] = targetKeys
+    formInstance.setFieldsValue(values)
+  }
 
   /**
    * @author zhoujingjing
@@ -200,10 +230,8 @@ function ComForm ({formInputs, formFunc, formClass}) {
         dataSource={item.dataSource} 
         disabled={item.disabled}
         titles={item.titles}
-        targetKeys={item.targetKeys}
-        selectedKeys={item.selectedKeys}
-        onChange={item.onChange}
-        onSelectChange={item.onSelectChange}
+        // targetKeys={item.targetKeys}
+        onChange={(nextTargetKeys) => {changeTransferTargetKeys(nextTargetKeys, item.name)}}
         onScroll={item.onScroll}
         render={item.render}
         operations={item.operations}
@@ -232,20 +260,20 @@ function ComForm ({formInputs, formFunc, formClass}) {
         blockNode={true}
         disabled={item.disabled}
         checkable={item.checkable}
-        checkedKeys={item.checkedKeys}
+        // checkedKeys={item.checkedKeys}
         filterTreeNode={item.filterTreeNode}
         loadData={item.loadData}
         loadedKeys={item.loadedKeys}
         multiple={item.multiple}
         selectable={item.selectable}
-        selectedKeys={item.selectedKeys}
+        // selectedKeys={item.selectedKeys}
         showIcon={item.showIcon}
         showLine={item.showLine}
         treeData={item.treeData}
-        onCheck={item.onCheck}
+        onCheck={(checkedKeys) => {changeTreeCheckedKeys(checkedKeys, item.name)}}
         onExpand={item.onExpand}
         onLoad={item.onLoad}
-        onSelect={item.onSelect}
+        onSelect={(selectedKeys) => {changeTreeSelectedKeys(selectedKeys, item.name)}}
       />)
     }
   }
@@ -254,10 +282,12 @@ function ComForm ({formInputs, formFunc, formClass}) {
    * @author zhoujingjing
    * @description 提交表单
    */
-  function handleFinish (values) {
-    if (formFunc.submitFunc) {
-      formFunc.submitFunc(values)
-    }
+  function handleSubmit () {
+    formInstance.validateFields().then(values => {
+      if (formFunc.submitFunc) {
+        formFunc.submitFunc(values)
+      }
+    }).catch(() => {})
   }
   
   /**
@@ -271,11 +301,33 @@ function ComForm ({formInputs, formFunc, formClass}) {
     formInstance.resetFields()
   }
 
+  /**
+   * @author zhoujingjing
+   * @description 向外暴露的方法(可方便父组件调用子组件方法)
+   */
+  useImperativeHandle(ref, () => ({
+    getFormValue: () => {
+      if (!formInstance) return
+      return formInstance.getFieldsValue()
+    },
+    getAppointValue: (name) => {
+      if (!name || !formInstance) return
+      return formInstance.getFieldValue(name)
+    }
+  }))
+
+  /**
+   * @author zhoujingjing
+   * @description 表单值更改时触发
+   */
+  useEffect(() => {
+    formInstance.setFieldsValue(formValues)
+  }, [formInstance, formValues])
+
   return (
     <Form
       form={formInstance}
       name={formClass.formName}
-      onFinish={handleFinish}
       layout={formClass.formLayout}
       {...formClass.formItemLayout}
       className={['com-form', formClass.formClass]}>
@@ -284,30 +336,33 @@ function ComForm ({formInputs, formFunc, formClass}) {
             <Form.Item
               name={item.name}
               label={item.label}
-              rules={item.rules}
+              rules={formRules[item.name]}
               key={index}
               valuePropName={item.valuePropName || 'value'}
-              getValueFromEvent={item.getValueFromEvent}>
-                {generateFormItem(item)}
+              getValueFromEvent={item.getValueFromEvent}
+              validateTrigger={['onChange', 'onBlur']}>
+              {generateFormItem(item)}
             </Form.Item>
           ))
         }
         <Form.Item {...formClass.formBtnLayout}>
-          <Button type="primary" htmlType="submit">{formFunc.submitText}</Button>
+          <Button type="primary" onClick={handleSubmit}>{formFunc.submitText}</Button>
           <Button htmlType="button" onClick={handleReset}>{formFunc.resetText}</Button>
         </Form.Item>
     </Form>
   )
-}
+})
 
 ComForm.propTypes = {
   formInputs: PropTypes.array.isRequired,
+  formRules: PropTypes.object,
   formFunc: PropTypes.object.isRequired,
   formClass: PropTypes.object
 }
 
 ComForm.defaultProps = {
   formInputs: [],
+  formRules: {},
   formFunc: {
     submitText: '',
     submitFunc: () => {},
