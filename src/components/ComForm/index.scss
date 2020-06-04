@@ -6,3 +6,6 @@
     height: auto;
   }
 }
+.com-form {
+  @include form-layout(3);
+}

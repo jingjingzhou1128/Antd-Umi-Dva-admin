@@ -340,7 +340,8 @@ const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formCl
               key={index}
               valuePropName={item.valuePropName || 'value'}
               getValueFromEvent={item.getValueFromEvent}
-              validateTrigger={['onChange', 'onBlur']}>
+              validateTrigger={['onChange', 'onBlur']}
+              className={['com-form-item', formClass.formItemClass]}>
               {generateFormItem(item)}
             </Form.Item>
           ))
@@ -370,8 +371,9 @@ ComForm.defaultProps = {
     resetFunc: () => {}
   },
   formClass: {
-    formName: '',
-    formClass: '',
+    formName: 'basicForm',
+    formClass: 'basic-form',
+    formItemClass: 'basic-form-item',
     formLayout: '',
     formItemLayout: {},
     formBtnLayout: {}

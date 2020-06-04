@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 
 import ComBreadcrumb from '@/components/ComBreadcrumb'
 import ComForm from '@/components/ComForm'
@@ -38,7 +38,11 @@ function FormBasic (props) {
     ]
   }
 
-  // const formRef = useRef()
+  /**
+   * @author zhoujingjing
+   * @description 表单引用对象
+   */
+  const formRef = useRef()
 
   /**
    * @author zhoujingjing
@@ -88,7 +92,9 @@ function FormBasic (props) {
       precision: 0,
       min: 0,
       max: 6,
-      formatter: (value) => `${value}%`
+      formatter: (value) => {
+        return value ? `${value}%` : value
+      }
     },
     {
       name: 'autoComplete',
@@ -483,14 +489,14 @@ function FormBasic (props) {
   const formClass = {
     formName: 'basicForm',
     formClass: 'basic-form',
-    formLayout: 'horizontal',
-    formItemLayout: {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 12 },
-    },
-    formBtnLayout: {
-      wrapperCol: { offset: 6, span: 12 },
-    }
+    formLayout: 'vertical',
+    // formItemLayout: {
+    //   labelCol: { span: 6 },
+    //   wrapperCol: { span: 12 },
+    // },
+    // formBtnLayout: {
+    //   wrapperCol: { offset: 6, span: 12 },
+    // }
   }
 
   /**
@@ -525,8 +531,7 @@ function FormBasic (props) {
       <ComBreadcrumb navData={navData}/>
       <div className="main-content">
         {/* <Button onClick={test}>test</Button> */}
-        {/*  ref={formRef} */}
-        <ComForm formInputs={formInputs} formRules={formRules} formValues={formValues} formFunc={formFunc} formClass={formClass}/>
+        <ComForm ref={formRef} formInputs={formInputs} formRules={formRules} formValues={formValues} formFunc={formFunc} formClass={formClass}/>
         {/* <Form
           form={formInstance}
           name="basicForm"

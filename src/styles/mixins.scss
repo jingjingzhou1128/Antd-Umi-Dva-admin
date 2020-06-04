@@ -1,0 +1,18 @@
+@mixin flex ($dir: row, $juc: center, $ali: center) {
+  display: flex;
+  flex-direction: $dir;
+  align-items: $ali;
+  justify-content: $juc;
+}
+
+@mixin form-layout ($col) {
+  @include flex(row, flex-start, flex-start);
+  flex-wrap: wrap;
+  .com-form-item {
+    width: (100% / $col) - 2%;
+    margin-right: (100% - ((100% / $col) - 2%) * $col) / ($col - 1);
+    &:nth-child(#{$col}n) {
+      margin-right: 0;
+    }
+  }
+}
