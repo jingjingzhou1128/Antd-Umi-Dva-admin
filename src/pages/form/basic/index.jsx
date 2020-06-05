@@ -388,7 +388,8 @@ function FormBasic (props) {
         }
       ],
       render: item => item.title,
-      valuePropName: 'targetKeys'
+      valuePropName: 'targetKeys',
+      className: 'width-all'
     },
     {
       name: 'treeSelect',
@@ -482,22 +483,22 @@ function FormBasic (props) {
     resetFunc: resetForm
   }
 
-  /**
-   * @author zhoujingjing
-   * @description 表单样式
-   */
-  const formClass = {
-    formName: 'basicForm',
-    formClass: 'basic-form',
-    formLayout: 'vertical',
-    // formItemLayout: {
-    //   labelCol: { span: 6 },
-    //   wrapperCol: { span: 12 },
-    // },
-    // formBtnLayout: {
-    //   wrapperCol: { offset: 6, span: 12 },
-    // }
-  }
+  // /**
+  //  * @author zhoujingjing
+  //  * @description 表单样式
+  //  */
+  // const formClass = {
+  //   formName: 'basicForm',
+  //   formClass: 'basic-form',
+  //   formLayout: 'vertical',
+  //   formItemLayout: {
+  //     labelCol: { span: 6 },
+  //     wrapperCol: { span: 12 },
+  //   },
+  //   formBtnLayout: {
+  //     wrapperCol: { offset: 6, span: 12 },
+  //   }
+  // }
 
   /**
    * @author zhoujingjing
@@ -531,7 +532,7 @@ function FormBasic (props) {
       <ComBreadcrumb navData={navData}/>
       <div className="main-content">
         {/* <Button onClick={test}>test</Button> */}
-        <ComForm ref={formRef} formInputs={formInputs} formRules={formRules} formValues={formValues} formFunc={formFunc} formClass={formClass}/>
+        <ComForm ref={formRef} formInputs={formInputs} formRules={formRules} formValues={formValues} formFunc={formFunc}/>
         {/* <Form
           form={formInstance}
           name="basicForm"

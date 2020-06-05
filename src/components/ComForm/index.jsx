@@ -330,7 +330,7 @@ const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formCl
       name={formClass.formName}
       layout={formClass.formLayout}
       {...formClass.formItemLayout}
-      className={['com-form', formClass.formClass]}>
+      className={formClass.formClass}>
         {
           formInputs.map((item, index) => (
             <Form.Item
@@ -341,12 +341,12 @@ const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formCl
               valuePropName={item.valuePropName || 'value'}
               getValueFromEvent={item.getValueFromEvent}
               validateTrigger={['onChange', 'onBlur']}
-              className={['com-form-item', formClass.formItemClass]}>
+              className={`${formClass.formItemClass} ${item.className}`}>
               {generateFormItem(item)}
             </Form.Item>
           ))
         }
-        <Form.Item {...formClass.formBtnLayout}>
+        <Form.Item {...formClass.formBtnLayout} className={formClass.formBtnClass}>
           <Button type="primary" onClick={handleSubmit}>{formFunc.submitText}</Button>
           <Button htmlType="button" onClick={handleReset}>{formFunc.resetText}</Button>
         </Form.Item>
@@ -372,9 +372,10 @@ ComForm.defaultProps = {
   },
   formClass: {
     formName: 'basicForm',
-    formClass: 'basic-form',
-    formItemClass: 'basic-form-item',
-    formLayout: '',
+    formClass: 'com-form',
+    formItemClass: 'com-form-item',
+    formBtnClass: 'com-form-btns',
+    formLayout: 'vertical',
     formItemLayout: {},
     formBtnLayout: {}
   }

@@ -48,7 +48,6 @@ export default {
   cssLoaderOptions: {
     localIdentName: '[local]'
   },
-  // sass: {},
   alias: {
     '@': require('path').resolve(__dirname, 'src'),
   },

@@ -14,5 +14,22 @@
     &:nth-child(#{$col}n) {
       margin-right: 0;
     }
+    &.width-all {
+      width: 100%;
+      margin-right: 0;
+    }
+    .ant-form-item-control {
+      .ant-picker, 
+      .ant-input-number {
+        width: 100%;
+      }
+    }
+  }
+  .com-form-btns {
+    width: 100%;
+    text-align: center;
+    .ant-btn + .ant-btn {
+      margin-left: 15px;
+    }
   }
 }
