@@ -1,19 +1,9 @@
 .main-content {
-  .com-form {
+  .layout-selector {
+    margin-bottom: 20px;
+  }
+  .panel-body {
     background: #fff;
     padding: 20px;
-  }
-  .ant-form {
-    .ant-form-item {
-      .ant-form-item-control {
-        .ant-picker, 
-        .ant-input-number {
-          width: 100%;
-        }
-        .ant-btn + .ant-btn {
-          margin-left: 15px;
-        }
-      }
-    }
   }
 }

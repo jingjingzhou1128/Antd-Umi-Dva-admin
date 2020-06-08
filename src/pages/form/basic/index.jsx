@@ -5,16 +5,16 @@ import ComForm from '@/components/ComForm'
 
 import {validateImage} from '@/utils/validate'
 
-// import {Button} from 'antd'
+import {Radio} from 'antd'
 
 import './index.scss'
 
 function FormBasic (props) {
-  // /**
-  //  * @author zhoujingjing
-  //  * @description 表单布局方式
-  //  */
-  // const [formLayout, setFormLayout] = useState('horizontal')
+  /**
+   * @author zhoujingjing
+   * @description 表单布局方式
+   */
+  const [formLayout, setFormLayout] = useState('horizontal')
 
   /**
    * @author zhoujingjing
@@ -483,22 +483,24 @@ function FormBasic (props) {
     resetFunc: resetForm
   }
 
-  // /**
-  //  * @author zhoujingjing
-  //  * @description 表单样式
-  //  */
-  // const formClass = {
-  //   formName: 'basicForm',
-  //   formClass: 'basic-form',
-  //   formLayout: 'vertical',
-  //   formItemLayout: {
-  //     labelCol: { span: 6 },
-  //     wrapperCol: { span: 12 },
-  //   },
-  //   formBtnLayout: {
-  //     wrapperCol: { offset: 6, span: 12 },
-  //   }
-  // }
+  /**
+   * @author zhoujingjing
+   * @description 表单样式
+   */
+  const [formStyle, setFormStyle] = useState({
+    formName: 'basicForm',
+    formClass: 'com-form-hor',
+    formItemClass: 'com-form-item',
+    formBtnClass: 'com-form-btns',
+    formLayout: 'horizontal',
+    formItemLayout: {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 12 },
+    },
+    formBtnLayout: {
+      wrapperCol: { offset: 6, span: 12 },
+    }
+  })
 
   /**
    * @author zhoujingjing
@@ -523,6 +525,40 @@ function FormBasic (props) {
     setFormInputs(tmpFormInputs)
   }
 
+  /**
+   * @author zhoujingjing
+   * @description 表单项排布方式更改触发回调
+   */
+  function handleLayoutChange (e) {
+    if (e.target.value === 'horizontal') {
+      setFormStyle({
+        formName: 'basicForm',
+        formClass: 'com-form-hor',
+        formItemClass: 'com-form-item',
+        formBtnClass: 'com-form-btns',
+        formLayout: 'horizontal',
+        formItemLayout: {
+          labelCol: { span: 6 },
+          wrapperCol: { span: 12 },
+        },
+        formBtnLayout: {
+          wrapperCol: { offset: 6, span: 12 },
+        }
+      })
+    } else {
+      setFormStyle({
+        formName: 'basicForm',
+        formClass: 'com-form-ver',
+        formItemClass: 'com-form-item',
+        formBtnClass: 'com-form-btns',
+        formLayout: 'vertical',
+        formItemLayout: {},
+        formBtnLayout: {}
+      })
+    }
+    setFormLayout(e.target.value)
+  }
+
   // function test () {
   //   console.log(formRef.current.getValue('text'))
   // }
@@ -531,66 +567,14 @@ function FormBasic (props) {
     <div className="main-wrapper">
       <ComBreadcrumb navData={navData}/>
       <div className="main-content">
-        {/* <Button onClick={test}>test</Button> */}
-        <ComForm ref={formRef} formInputs={formInputs} formRules={formRules} formValues={formValues} formFunc={formFunc}/>
-        {/* <Form
-          form={formInstance}
-          name="basicForm"
-          onFinish={handleSubmit}
-          layout={formLayout}
-          {...formItemlayout}
-          className="basic-form">
-            <Form.Item
-              name="title"
-              label="标题"
-              rules={[{required: true, message: 'Please input title'}]}>
-              <Input placeholder="Please input title"/>
-            </Form.Item>
-            <Form.Item
-              name="date"
-              label="起止日期"
-              rules={[{required: true, message: 'Please select date'}]}>
-                <RangePicker />
-            </Form.Item>
-            <Form.Item
-              name="desc"
-              label="目标描述"
-              rules={[{required: false}]}>
-              <Input.TextArea rows={4} />
-            </Form.Item>
-            <Form.Item
-              name="custom"
-              label="客户"
-              rules={[{required: false}]}>
-                <Select
-                  placeholder=""
-                  allowClear>
-                  <Select.Option value="user1">User1</Select.Option>
-                  <Select.Option value="user2">User2</Select.Option>
-                  <Select.Option value="user3">User3</Select.Option>
-                </Select>
-              </Form.Item>
-            <Form.Item
-              name="weight"
-              label="权重"
-              rules={[{required: false}]}>
-              <InputNumber />
-            </Form.Item>
-            <Form.Item
-              name="roles"
-              label="角色"
-              rules={[{required: false}]}>
-              <Radio.Group>
-                <Radio value={1}>A</Radio>
-                <Radio value={2}>B</Radio>
-                <Radio value={3}>C</Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item {...formBtnLayout}>
-              <Button type="primary" htmlType="submit">提交</Button>
-              <Button htmlType="button">重置</Button>
-            </Form.Item>
-        </Form> */}
+        <div className="panel-body">
+          <Radio.Group value={formLayout} onChange={handleLayoutChange} className="layout-selector">
+            <Radio.Button value="horizontal">Horizontal</Radio.Button>
+            <Radio.Button value="vertical">Vertical</Radio.Button>
+          </Radio.Group>
+          {/* <Button onClick={test}>test</Button> */}
+          <ComForm ref={formRef} formInputs={formInputs} formRules={formRules} formValues={formValues} formFunc={formFunc} formStyle={formStyle}/>
+        </div>
       </div>
     </div>
   )

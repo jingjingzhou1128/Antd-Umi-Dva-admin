@@ -4,7 +4,8 @@ export default {
   'reactFrame.route.dashboard': 'Dashboard',
   'reactFrame.route.ui': 'UI',
   'reactFrame.route.form': 'FORM',
-  'reactFrame.route.formBasic': 'Form Basic'
+  'reactFrame.route.formBasic': 'Form Basic',
+  'reactFrame.route.formDynamic': 'Form Dynamic'
   // reactFrame: {
   //   route: {
   //     dashboard: 'Dashboard',

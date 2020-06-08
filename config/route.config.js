@@ -56,18 +56,18 @@ export default [
               name: 'formBasic',
               prmCode: 'FORM-BASIC'
             }
+          },
+          {
+            path: '/home/form/dynamic',
+            component: './form/dynamic/index',
+            Routes: ['./src/routes/PermisRoute.js'],
+            title: 'UMI-FORM',
+            meta: {
+              icon: 'icon-dashboard',
+              name: 'formDynamic',
+              prmCode: 'FORM-DYNAMIC'
+            }
           }
-          // {
-          //   path: '/home/nest/menu2',
-          //   component: './nest/menu2/index',
-          //   Routes: ['./src/routes/PermisRoute.js'],
-          //   title: 'UMI-Nest',
-          //   meta: {
-          //     icon: 'icon-dashboard',
-          //     name: 'nestMenu2',
-          //     prmCode: 'NEST-MENU2'
-          //   }
-          // }
         ]
       }
     ]

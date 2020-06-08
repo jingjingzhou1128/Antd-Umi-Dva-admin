@@ -24,7 +24,7 @@ import './index.scss'
 
 const { RangePicker } = DatePicker
 
-const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formClass}, ref) => {
+const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formStyle}, ref) => {
   /**
    * @author zhoujingjing
    * @description 表单实列
@@ -327,10 +327,10 @@ const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formCl
   return (
     <Form
       form={formInstance}
-      name={formClass.formName}
-      layout={formClass.formLayout}
-      {...formClass.formItemLayout}
-      className={formClass.formClass}>
+      name={formStyle.formName}
+      layout={formStyle.formLayout}
+      {...formStyle.formItemLayout}
+      className={formStyle.formClass}>
         {
           formInputs.map((item, index) => (
             <Form.Item
@@ -341,12 +341,12 @@ const ComForm = forwardRef(({formInputs, formRules, formValues, formFunc, formCl
               valuePropName={item.valuePropName || 'value'}
               getValueFromEvent={item.getValueFromEvent}
               validateTrigger={['onChange', 'onBlur']}
-              className={`${formClass.formItemClass} ${item.className}`}>
+              className={`${formStyle.formItemClass} ${item.className}`}>
               {generateFormItem(item)}
             </Form.Item>
           ))
         }
-        <Form.Item {...formClass.formBtnLayout} className={formClass.formBtnClass}>
+        <Form.Item {...formStyle.formBtnLayout} className={formStyle.formBtnClass}>
           <Button type="primary" onClick={handleSubmit}>{formFunc.submitText}</Button>
           <Button htmlType="button" onClick={handleReset}>{formFunc.resetText}</Button>
         </Form.Item>
@@ -358,7 +358,7 @@ ComForm.propTypes = {
   formInputs: PropTypes.array.isRequired,
   formRules: PropTypes.object,
   formFunc: PropTypes.object.isRequired,
-  formClass: PropTypes.object
+  formStyle: PropTypes.object
 }
 
 ComForm.defaultProps = {
@@ -370,9 +370,9 @@ ComForm.defaultProps = {
     resetText: '',
     resetFunc: () => {}
   },
-  formClass: {
-    formName: 'basicForm',
-    formClass: 'com-form',
+  formStyle: {
+    formName: 'comForm',
+    formClass: 'com-form-ver',
     formItemClass: 'com-form-item',
     formBtnClass: 'com-form-btns',
     formLayout: 'vertical',

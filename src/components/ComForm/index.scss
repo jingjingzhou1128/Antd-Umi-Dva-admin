@@ -7,6 +7,9 @@
     height: auto;
   }
 }
-.com-form {
-  @include form-layout(3);
+.com-form-ver {
+  @include form-layout-ver(3);
+}
+.com-form-hor {
+  @include form-layout-hor();
 }
