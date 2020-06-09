@@ -1,7 +1,9 @@
-import React from 'react'
-import {Form, Button, Input} from 'antd'
+import React, {useEffect, useState} from 'react'
+import {Form, Button, Input, Space} from 'antd'
 
 import ComBreadcrumb from '@/components/ComBreadcrumb'
+
+import './index.scss'
 
 function DynamicForm (props) {
   /**
@@ -34,6 +36,15 @@ function DynamicForm (props) {
 
   /**
    * @author zhoujingjing
+   * @description 表单数据
+   */
+  const [formValues, setFormValues] = useState({
+    title: '',
+    users: ['']
+  })
+
+  /**
+   * @author zhoujingjing
    * @description 表单项布局数据
    */
   const formItemLayout = {
@@ -57,6 +68,27 @@ function DynamicForm (props) {
     console.log(e)
   }
 
+  /**
+   * @author zhoujingjing
+   * @description 页面挂载完成生命周期方法
+   */
+  useEffect(() => {
+    let values = {
+      title: 'title',
+      users: ['user1'],
+      goods: [{name: 'goods1', price: 12}]
+    }
+    setFormValues(values)
+  }, [])
+
+  /**
+   * @author zhoujingjing
+   * @description 表单数据更新时触发
+   */
+  useEffect(() => {
+    formInstance.setFieldsValue(formValues)
+  }, [formInstance, formValues])
+
   return (
     <div className="main-wrapper">
       <ComBreadcrumb navData={navData}/>
@@ -68,45 +100,103 @@ function DynamicForm (props) {
             onFinish={handleSubmit}
             layout="horizontal"
             {...formItemLayout}
-            className="basic-form">
-              <Form.Item
-                name="title"
-                label="标题"
-                rules={[{required: true, message: 'Please input title'}]}>
-                <Input placeholder="Please input title"/>
-              </Form.Item>
-              <Form.List name="users">
-                {
-                  (fields, {add, remove}) => {
-                    return (
-                      <div>
-                        {
-                          fields.map((field, index) => (
+            className="dynamic-form"
+          >
+            <Form.Item
+              name="title"
+              label="标题"
+              rules={[{required: true, message: 'Please input title'}]}
+            >
+              <Input placeholder="Please input title"/>
+            </Form.Item>
+            <Form.List name="users">
+              {
+                (fields, {add, remove}) => {
+                  return (
+                    <div className="form-list-items">
+                      {
+                        fields.map((field, index) => (
+                          <Form.Item 
+                            label={index === 0 ? '用户' : ''}
+                            key={field.key}
+                            {...(index === 0 ? formItemLayout : formBtnLayout)}
+                            className="form-list-item"
+                          >
                             <Form.Item 
                               {...field}
-                              // label={index === 0 ? '用户' : ''}
-                              label="用户"
-                              name={[field.name, 'first']}
-                              fieldKey={[field.fieldKey, 'first']}>
+                            >
                               <Input placeholder="Please input ..."/>
-                              {/* {
-                                index > 0 ? <i className="iconfont icon-jianhao"></i> : null
-                              } */}
                             </Form.Item>
-                          ))
-                        }
-                        <Form.Item>
-                          <Button type="dashed" onClick={() => {add()}} block>Add</Button>
-                        </Form.Item>
-                      </div>
-                    )
-                  }
+                            {
+                              index > 0 ? <i className="iconfont icon-jianhao btn-remove" onClick={() => {remove(field.name)}}></i> : null
+                            }
+                          </Form.Item>
+                        ))
+                      }
+                      <Form.Item
+                        {...formBtnLayout}
+                        className="btn-add"
+                      >
+                        <Button type="dashed" onClick={() => {add()}} block>Add</Button>
+                      </Form.Item>
+                    </div>
+                  )
                 }
-              </Form.List>
-              <Form.Item {...formBtnLayout}>
-                <Button type="primary" htmlType="submit">提交</Button>
-                <Button htmlType="button">重置</Button>
-              </Form.Item>
+              }
+            </Form.List>
+            <Form.List name="goods">
+              {
+                (fields, {add, remove}) => {
+                  return (
+                    <div className="form-list-items">
+                      {
+                        fields.map((field, index) => (
+                          <Form.Item 
+                            label={index === 0 ? '商品' : ''}
+                            key={field.key}
+                            {...(index === 0 ? formItemLayout : formBtnLayout)}
+                            className="form-list-item"
+                          >
+                            <Space>
+                              <Form.Item 
+                                {...field}
+                                name={[field.name, 'name']}
+                                fieldKey={[field.fieldKey, 'name']}
+                              >
+                                <Input placeholder="Please input ..."/>
+                              </Form.Item>
+                              <Form.Item 
+                                {...field}
+                                name={[field.name, 'price']}
+                                fieldKey={[field.fieldKey, 'price']}
+                              >
+                                <Input placeholder="Please input ..."/>
+                              </Form.Item>
+                            </Space>
+                            {
+                              index > 0 ? <i className="iconfont icon-jianhao btn-remove" onClick={() => {remove(field.name)}}></i> : null
+                            }
+                          </Form.Item>
+                        ))
+                      }
+                      <Form.Item
+                        {...formBtnLayout}
+                        className="btn-add"
+                      >
+                        <Button type="dashed" onClick={() => {add()}} block>Add</Button>
+                      </Form.Item>
+                    </div>
+                  )
+                }
+              }
+            </Form.List>
+            <Form.Item 
+              {...formBtnLayout}
+              className="form-item-btns"
+            >
+              <Button type="primary" htmlType="submit">提交</Button>
+              <Button htmlType="button">重置</Button>
+            </Form.Item>
           </Form>
         </div>
       </div>

@@ -358,7 +358,8 @@ ComForm.propTypes = {
   formInputs: PropTypes.array.isRequired,
   formRules: PropTypes.object,
   formFunc: PropTypes.object.isRequired,
-  formStyle: PropTypes.object
+  formStyle: PropTypes.object,
+  formValues: PropTypes.object
 }
 
 ComForm.defaultProps = {
@@ -378,7 +379,8 @@ ComForm.defaultProps = {
     formLayout: 'vertical',
     formItemLayout: {},
     formBtnLayout: {}
-  }
+  },
+  formValues: {}
 }
 
 export default ComForm
