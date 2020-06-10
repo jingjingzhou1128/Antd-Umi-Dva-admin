@@ -1,13 +1,16 @@
 .dynamic-form {
-  .form-list-items > .ant-form-item {
-    margin-bottom: 0;
-    &.btn-add {
-      margin-bottom: 24px;
+  .form-list-items > .form-list-item:last-child {
+    .ant-form-item {
+      margin-bottom: 0;
     }
+    // margin-bottom: 0;
+    // &.btn-add {
+    //   margin-bottom: 24px;
+    // }
   }
   .form-list-item {
     position: relative;
-    .btn-remove {
+    .iconfont {
       position: absolute;
       right: -25px;
       top: 0;

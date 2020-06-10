@@ -16,6 +16,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-jiahao:before {
+  content: "\e605";
+}
+
 .icon-jianhao:before {
   content: "\e659";
 }
