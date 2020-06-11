@@ -4,7 +4,6 @@ import {Form, Button, Input, Space} from 'antd'
 import ComBreadcrumb from '@/components/ComBreadcrumb'
 
 import './index.scss'
-import { isArray } from 'util'
 
 function DynamicForm (props) {
   /**
@@ -109,7 +108,7 @@ function DynamicForm (props) {
    */
   function validGoods (rule, value, callback) {
     let goods = formInstance.getFieldValue('goods')
-    if (!isArray(goods)) {
+    if (!Array.isArray(goods)) {
       callback(new Error('Please input one goods at least'))
       return
     }

@@ -5,5 +5,7 @@ export default {
   'reactFrame.route.ui': 'UI',
   'reactFrame.route.form': '表单',
   'reactFrame.route.formBasic': '基础表单',
-  'reactFrame.route.formDynamic': '动态表单'
+  'reactFrame.route.formDynamic': '动态表单',
+  'reactFrame.route.table': '表格',
+  'reactFrame.route.tableBasic': '基础表格'
 }

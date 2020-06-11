@@ -69,6 +69,24 @@ export default [
             }
           }
         ]
+      },
+      {
+        path: '/home/table',
+        meta: {
+          icon: 'icon-dashboard',
+          name: 'table'
+        },
+        routes: [
+          {
+            path: '/home/table/basic',
+            component: './table/basic/index',
+            title: 'UMI-TABLE',
+            meta: {
+              icon: 'icon-dashboard',
+              name: 'tableBasic'
+            }
+          }
+        ]
       }
     ]
   },
