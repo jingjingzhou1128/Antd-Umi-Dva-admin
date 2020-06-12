@@ -17,6 +17,7 @@ function DynamicForm (props) {
     user1: [''],
     goods1: [{}]
   }
+
   /**
    * @author zhoujingjing
    * @description 面包屑导航栏

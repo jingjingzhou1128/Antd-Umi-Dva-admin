@@ -1,8 +1,11 @@
 .table-wrapper {
   width: 100%;
-  .ant-table-thead > tr > th,
-  .ant-table-tbody > tr > td {
-    padding: 8px;
+  // .ant-table-thead > tr > th,
+  // .ant-table-tbody > tr > td {
+  //   padding: 8px;
+  // }
+  .ant-table-content {
+    overflow-x: auto !important;
   }
 }
 .page-wrapper {

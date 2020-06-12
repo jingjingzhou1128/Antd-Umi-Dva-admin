@@ -558,7 +558,7 @@ function FormBasic (props) {
     }
     setFormLayout(e.target.value)
   }
-
+  
   // function test () {
   //   console.log(formRef.current.getValue('text'))
   // }

@@ -9,7 +9,25 @@ function ComTable (props) {
   
   return (
     <div className="table-wrapper">
-      <Table columns={tableColumns} dataSource={tableData.data} rowKey={tableData.rowKey || 'id'} pagination={false} onChange={tableData.onChange}></Table>
+      <Table 
+        columns={tableColumns} 
+        dataSource={tableData.data} 
+        rowKey={tableData.rowKey || 'id'} 
+        pagination={false} 
+        // onChange={tableData.onChange}
+        tableLayout="fixed"
+        bordered={tableData.bordered}
+        loading={tableData.loading}
+        rowClassName={tableData.rowClassName}
+        rowSelection={tableData.rowSelection}
+        showHeader={tableData.showHeader}
+        size="default"
+        scroll={tableData.scroll || {
+          x: '100%',
+          scrollToFirstRowOnChange: true
+        }}
+        showSorterTooltip={false}
+      ></Table>
       {
         tableData.hasPage && (
           <div className="page-wrapper">
@@ -21,7 +39,7 @@ function ComTable (props) {
               onChange={tableData.page.handleChangePage}
               onShowSizeChange={tableData.page.handleChangeSize}
               showQuickJumper={tableData.page.showQuickJumper || false}
-              showSizeChanger={tableData.page.showSizeChanger || false}
+              showSizeChanger={true}
               showTotal={tableData.page.showTotal}/>
           </div>
         )
