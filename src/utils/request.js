@@ -17,12 +17,12 @@ axios.interceptors.request.use(function (config) {
   }
   // 在发送请求之前做些什么
   // 能做的事如下 检查权限 增加页面loading  网络状态判断等
-  if (promiseArr[config.url] && config.url !== `${window.config.baseUrl}/user/prmCodeList`) {
-    promiseArr[config.url]('cancel')
-    promiseArr[config.url] = cancel
-  } else {
-    promiseArr[config.url] = cancel
-  }
+  // if (promiseArr[config.url] && config.url !== `${window.config.baseUrl}/user/prmCodeList`) {
+  //   promiseArr[config.url]('cancel')
+  //   promiseArr[config.url] = cancel
+  // } else {
+  //   promiseArr[config.url] = cancel
+  // }
   return config
 }, function (error) {
   // 对请求错误做些什么

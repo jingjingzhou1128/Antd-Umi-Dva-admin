@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react'
-import {Dropdown, Menu} from 'antd'
+import React, {useState, useEffect, useRef, useMemo} from 'react'
+import {Dropdown, Menu, Input} from 'antd'
 
 import ajax from '../service'
 
@@ -7,7 +7,39 @@ import ComBreadcrumb from '@/components/ComBreadcrumb'
 import ComTable from '@/components/ComTable'
 import MyIcon from '@/components/MyIcon'
 
-function BasicTable (props) {
+const EditTableCell = ({editable, children, row, rowIndex,  dataIndex, onSaveCell, ...otherProps}) => {
+  const [isEditing, setEditing] = useState(false)
+
+  const inputRef = useRef(null)
+
+  function toggleEdit () {
+    setEditing(!isEditing)
+  }
+
+  function saveValue (e) {
+    toggleEdit()
+    onSaveCell(dataIndex, rowIndex, e.target.value)
+  }
+
+  useEffect(() => {
+    if (inputRef && isEditing) {
+      inputRef.current.focus()
+    }
+  }, [isEditing])
+
+  if (!editable) return <td {...otherProps}>{children}</td>
+  return isEditing ? (
+    <td {...otherProps}>
+      <Input ref={inputRef} defaultValue={row[dataIndex]} onPressEnter={saveValue} onBlur={saveValue}/>
+    </td>
+  ) : (
+    <td {...otherProps}>
+      <div onClick={toggleEdit}>{children}</div>
+    </td>
+  )
+}
+
+function EditTable (props) {
   /**
    * @author zhoujingjing
    * @description 面包屑导航栏
@@ -118,6 +150,36 @@ function BasicTable (props) {
 
   /**
    * @author zhoujingjing
+   * @description 覆盖表格table元素
+   */
+  const tableComponents = {
+    body: {
+      cell: EditTableCell
+    }
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 转换列表项，添加单元格属性
+   */
+  const transTableColumns = useMemo(() => {
+    return tableColumns.map(column => {
+      if (!column.editable) return column
+      return {
+        ...column,
+        onCell: (row, rowIndex) => ({
+          row,
+          rowIndex,
+          editable: column.editable,
+          dataIndex: column.dataIndex,
+          onSaveCell: handleSaveCell
+        })
+      }
+    })
+  }, [tableColumns])
+
+  /**
+   * @author zhoujingjing
    * @description 渲染表格操作菜单
    * @param {*} value 
    * @param {*} row 
@@ -150,7 +212,6 @@ function BasicTable (props) {
    * @param {*} extra 
    */
   function handleChange (pagination, filters, sorter, extra) {
-    if (tableData.loading) return
     let data = {
       ...tableParams,
       ...filters,
@@ -166,7 +227,6 @@ function BasicTable (props) {
    * @description 表格分页-页码更改触发回调
    */
   function handleChangePage (page, pageSize) {
-    if (tableData.loading) return
     setTableData(cur => {
       let tmpTableData = {...cur}
       tmpTableData.page.current = page
@@ -180,7 +240,6 @@ function BasicTable (props) {
    * @description 表格分页-pageSize选择器更改触发回调
    */
   function handleChangeSize (current, size) {
-    if (tableData.loading) return
     setTableData(cur => {
       let tmpTableData = {...cur}
       tmpTableData.page.current = 1
@@ -229,6 +288,21 @@ function BasicTable (props) {
 
   /**
    * @author zhoujingjing
+   * @description 保存修改后的表格值
+   * @param {*} name 
+   * @param {*} rowIndex 
+   * @param {*} value 
+   */
+  function handleSaveCell (name, rowIndex, value) {
+    setTableData(data => {
+      let tmpData = {...data}
+      tmpData.data[rowIndex][name] = value
+      return tmpData
+    })
+  }
+
+  /**
+   * @author zhoujingjing
    * @description 页面挂载生命周期
    */
   useEffect(() => {
@@ -240,47 +314,11 @@ function BasicTable (props) {
       <ComBreadcrumb navData={navData}/>
       <div className="main-content">
         <div className="panel-body">
-          <ComTable tableColumns={tableColumns} tableData={tableData}/>
-          {/* <Table 
-            dataSource={tableData} 
-            columns={tableColumns} 
-            bordered={true}
-            loading={false}
-            rowClassName={(record, index) => {return 'row-class'}}
-            rowKey="id"
-            rowSelection={{
-              columnWidth: '50px',
-              fixed: true,
-              type: 'checkbox'
-            }}
-            showHeader={true}
-            size="default"
-            onChange={(pagination, filters, sorter, extra) => {
-              console.log(pagination)
-              console.log(filters)
-              console.log(sorter)
-            }}
-            scroll={{
-              x: 'max-content',
-              scrollToFirstRowOnChange: true
-            }}
-            showSorterTooltip={false}
-            pagination={{
-              position: ['bottomCenter'],
-              current: 1,
-              disabled: false,
-              pageSize: 10,
-              total: 20,
-              showTotal: total => `Total ${total} items`,
-              pageSizeOptions: ['10', '30', '50', '100'],
-              showQuickJumper: true,
-              showSizeChanger: true
-            }}
-          /> */}
+          <ComTable tableColumns={transTableColumns} tableData={tableData} components={tableComponents}/>
         </div>
       </div>
     </div>
   )
 }
 
-export default BasicTable
+export default EditTable

@@ -3,14 +3,14 @@ import $axios from '@/utils/request'
 export default {
   /**
    * @author zhoujingjing
-   * @description 上传图片
+   * @description 获取列表数据
    * @version 1.0.0
    * @param {*} data {Object}
    */
-  getSummaryData (data) {
+  getTableList (data) {
     const service = {
-      method: 'post',
-      url: `${window.config.baseUrl}/file/upload`
+      method: 'get',
+      url: `${window.config.baseUrl}/table/list`
     }
     return $axios(service, data)
   }

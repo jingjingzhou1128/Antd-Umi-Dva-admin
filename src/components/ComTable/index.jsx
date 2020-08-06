@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import './index.scss'
 
 function ComTable (props) {
-  const {tableColumns, tableData} = props
+  const {tableColumns, tableData, ...otherProps} = props
   
   return (
     <div className="table-wrapper">
@@ -14,7 +14,7 @@ function ComTable (props) {
         dataSource={tableData.data} 
         rowKey={tableData.rowKey || 'id'} 
         pagination={false} 
-        // onChange={tableData.onChange}
+        onChange={tableData.handleChange}
         tableLayout="fixed"
         bordered={tableData.bordered}
         loading={tableData.loading}
@@ -27,6 +27,7 @@ function ComTable (props) {
           scrollToFirstRowOnChange: true
         }}
         showSorterTooltip={false}
+        {...otherProps}
       ></Table>
       {
         tableData.hasPage && (
