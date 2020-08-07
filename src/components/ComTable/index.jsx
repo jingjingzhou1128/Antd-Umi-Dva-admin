@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import './index.scss'
 
 function ComTable (props) {
-  const {tableColumns, tableData, ...otherProps} = props
+  const {tableColumns, tableData, tableFuncs, ...otherProps} = props
   
   return (
     <div className="table-wrapper">
@@ -14,7 +14,7 @@ function ComTable (props) {
         dataSource={tableData.data} 
         rowKey={tableData.rowKey || 'id'} 
         pagination={false} 
-        onChange={tableData.handleChange}
+        onChange={tableFuncs.handleChange}
         tableLayout="fixed"
         bordered={tableData.bordered}
         loading={tableData.loading}
@@ -37,8 +37,8 @@ function ComTable (props) {
               pageSize={tableData.page.pageSize} 
               pageSizeOptions={tableData.page.pageSizeOptions || ['10', '20', '30', '40']}
               total={tableData.page.total}
-              onChange={tableData.page.handleChangePage}
-              onShowSizeChange={tableData.page.handleChangeSize}
+              onChange={tableFuncs.handleChangePage}
+              onShowSizeChange={tableFuncs.handleChangeSize}
               showQuickJumper={tableData.page.showQuickJumper || false}
               showSizeChanger={true}
               showTotal={tableData.page.showTotal}/>
@@ -51,14 +51,16 @@ function ComTable (props) {
 
 ComTable.propTypes = {
   tableColumns: PropTypes.array.isRequired,
-  tableData: PropTypes.object.isRequired
+  tableData: PropTypes.object.isRequired,
+  tableFuncs: PropTypes.object
 }
 
 ComTable.defaultProps = {
   tableColumns: [],
   tableData: {
     data: []
-  }
+  },
+  tableFuncs: {}
 }
 
 export default ComTable

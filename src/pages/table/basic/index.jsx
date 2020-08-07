@@ -6,6 +6,8 @@ import ajax from '../service'
 import ComBreadcrumb from '@/components/ComBreadcrumb'
 import ComTable from '@/components/ComTable'
 import MyIcon from '@/components/MyIcon'
+import { useCallback } from 'react'
+import { useMemo } from 'react'
 
 function BasicTable (props) {
   /**
@@ -47,13 +49,20 @@ function BasicTable (props) {
       current: 1,
       pageSize: 10,
       total: 0,
-      handleChangePage: handleChangePage,
-      handleChangeSize: handleChangeSize,
       showTotal: total => `共计${total}项`
     },
-    handleChange: handleChange,
     data: []
   })
+
+  /**
+   * @author zhoujingjing
+   * @description 表格方法
+   */
+  const tableFuncs = {
+    handleChangePage: handleChangePage,
+    handleChangeSize: handleChangeSize,
+    handleChange: handleChange,
+  }
 
   /**
    * @author zhoujingjing
@@ -69,7 +78,7 @@ function BasicTable (props) {
    * @author zhoujingjing
    * @description 表格列项
    */
-  const tableColumns = [
+  const tableColumns = useMemo(() => [
     {
       title: '姓名',
       dataIndex: 'name',
@@ -114,7 +123,7 @@ function BasicTable (props) {
       fixed: 'right',
       render: renderTableOperate
     }
-  ]
+  ], [tableParams.name])
 
   /**
    * @author zhoujingjing
@@ -150,7 +159,7 @@ function BasicTable (props) {
    * @param {*} extra 
    */
   function handleChange (pagination, filters, sorter, extra) {
-    if (tableData.loading) return
+    if (tableData.loading) return false
     let data = {
       ...tableParams,
       ...filters,
@@ -166,7 +175,7 @@ function BasicTable (props) {
    * @description 表格分页-页码更改触发回调
    */
   function handleChangePage (page, pageSize) {
-    if (tableData.loading) return
+    if (tableData.loading) return false
     setTableData(cur => {
       let tmpTableData = {...cur}
       tmpTableData.page.current = page
@@ -180,7 +189,7 @@ function BasicTable (props) {
    * @description 表格分页-pageSize选择器更改触发回调
    */
   function handleChangeSize (current, size) {
-    if (tableData.loading) return
+    if (tableData.loading) return false
     setTableData(cur => {
       let tmpTableData = {...cur}
       tmpTableData.page.current = 1
@@ -240,7 +249,7 @@ function BasicTable (props) {
       <ComBreadcrumb navData={navData}/>
       <div className="main-content">
         <div className="panel-body">
-          <ComTable tableColumns={tableColumns} tableData={tableData}/>
+          <ComTable tableColumns={tableColumns} tableData={tableData} tableFuncs={tableFuncs}/>
           {/* <Table 
             dataSource={tableData} 
             columns={tableColumns} 
