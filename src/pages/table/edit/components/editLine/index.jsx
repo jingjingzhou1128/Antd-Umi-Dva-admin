@@ -1,35 +1,44 @@
-import React, {useState, useEffect, useMemo} from 'react'
-import {Dropdown, Menu} from 'antd'
+import React, {useState, useEffect, useMemo, useCallback} from 'react'
+import {Input, Button, Form} from 'antd'
 
-import ajax from '../service'
+import ajax from '../../../service'
 
-import ComBreadcrumb from '@/components/ComBreadcrumb'
 import ComTable from '@/components/ComTable'
-import MyIcon from '@/components/MyIcon'
 
-function BasicTable (props) {
-  /**
-   * @author zhoujingjing
-   * @description 面包屑导航栏
-   */
-  const navData = {
-    separator: '/',
-    list: [
-      {
-        title: '首页',
-        path: '/home/dashboard'
-      },
-      {
-        title: '表格页',
-        path: ''
-      },
-      {
-        title: '基础表格',
-        path: ''
-      }
-    ]
-  }
+import './index.scss'
 
+/**
+ * @author zhoujingjing
+ * @description 表单验证规则
+ */
+const FormRules = {
+  name: [
+    {required: true, message: '请输入姓名'}
+  ],
+  age: [
+    {required: true, message: '请输入年龄'}
+  ],
+  address: [
+    {required: true, message: '请输入住址'}
+  ]
+}
+
+const EditTableCell = ({editable, children, row, dataIndex, isEditing, ...otherProps}) => {
+  if (!editable) return <td {...otherProps}>{children}</td>
+  return isEditing ? (
+    <td {...otherProps}>
+      <Form.Item name={dataIndex} style={{margin: 0}} rules={FormRules[dataIndex]}>
+        <Input />
+      </Form.Item>
+    </td>
+  ) : (
+    <td {...otherProps}>
+      <div>{children}</div>
+    </td>
+  )
+}
+
+function EditTableLine (props) {
   /**
    * @author zhoujingjing
    * @description 表格数据
@@ -46,21 +55,38 @@ function BasicTable (props) {
     page: {
       current: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
     },
     data: []
   })
 
   /**
    * @author zhoujingjing
-   * @description 表格方法
+   * @description 当前编辑的表格行索引
    */
-  const tableFuncs = {
-    handleChangePage: handleChangePage,
-    handleChangeSize: handleChangeSize,
-    handleChange: handleChange,
-    showTotal: total => `共计${total}项`
-  }
+  const [editIndex, setEditIndex] = useState('')
+
+  /**
+   * @author zhoujingjing
+   * @description 渲染表格操作菜单
+   * @param {*} value 
+   * @param {*} row 
+   * @param {*} index 
+   */
+  const renderTableOperate = useCallback((value, row, index) => {
+    let isEditing = editIndex === index
+
+    return (
+      isEditing ? (
+        <div>
+          <Button type="link" onClick={() => getSave(row, index)}>Save</Button>
+          <Button type="link" onClick={() => getCancel(row, index)}>Cancel</Button>
+        </div>
+      ) : (
+        <Button type="link" onClick={() => {getEdit(row, index)}}>Edit</Button>
+      )
+    )
+  }, [editIndex])
 
   /**
    * @author zhoujingjing
@@ -94,7 +120,8 @@ function BasicTable (props) {
           value: 'filter2'
         }
       ],
-      ellipsis: true
+      ellipsis: true,
+      editable: true
       // width: '100px'
     },
     {
@@ -112,6 +139,7 @@ function BasicTable (props) {
       sorter: true,
       key: 'address',
       ellipsis: true,
+      editable: true
       // width: '100px',
     },
     {
@@ -121,31 +149,92 @@ function BasicTable (props) {
       fixed: 'right',
       render: renderTableOperate
     }
-  ], [tableParams.name])
+  ], [tableParams.name, renderTableOperate])
 
   /**
    * @author zhoujingjing
-   * @description 渲染表格操作菜单
-   * @param {*} value 
+   * @description 表格方法
+   */
+  const tableFuncs = {
+    handleChangePage: handleChangePage,
+    handleChangeSize: handleChangeSize,
+    handleChange: handleChange,
+    showTotal: total => `共计${total}项`
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 覆盖表格table元素
+   */
+  const tableComponents = {
+    body: {
+      cell: EditTableCell
+    }
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 转换列表项，添加单元格属性
+   */
+  const transTableColumns = useMemo(() => {
+    return tableColumns.map(column => {
+      if (!column.editable) return column
+      return {
+        ...column,
+        onCell: (row, rowIndex) => ({
+          row,
+          editable: column.editable,
+          dataIndex: column.dataIndex,
+          isEditing: editIndex === rowIndex
+        })
+      }
+    })
+  }, [tableColumns, editIndex])
+
+  /**
+   * @author zhoujingjing
+   * @description 表单实例
+   */
+  const [form] = Form.useForm()
+
+  /**
+   * @author zhoujingjing
+   * @description 编辑表格
    * @param {*} row 
    * @param {*} index 
    */
-  function renderTableOperate (value, row, index) {
-    let menus = (
-      <Menu>
-        <Menu.Item key="delete">Delete</Menu.Item>
-        <Menu.Item key="view">View Detail</Menu.Item>
-      </Menu>
-    )
+  function getEdit (row, index) {
+    form.setFieldsValue(row)
+    setEditIndex(index)
+  }
 
-    return (
-      <Dropdown
-        overlay={menus}
-        trigger={['click']}
-      >
-        <MyIcon type="icon-more"/>
-      </Dropdown>
-    )
+  /**
+   * @author zhoujingjing
+   * @description 保存当前编辑行
+   * @param {*} row 
+   * @param {*} index 
+   */
+  function getSave (row, index) {
+    let formData = form.getFieldsValue()
+    setTableData(data => {
+      let tmpData = {
+        ...data,
+        data: [...data.data]
+      }
+      tmpData.data[index] = Object.assign({}, row, formData)
+      return tmpData
+    })
+    setEditIndex('')
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 取消当前编辑行
+   * @param {*} row 
+   * @param {*} index 
+   */
+  function getCancel (row, index) {
+    setEditIndex('')
   }
 
   /**
@@ -243,51 +332,10 @@ function BasicTable (props) {
   }, [])
 
   return (
-    <div className="main-wrapper">
-      <ComBreadcrumb navData={navData}/>
-      <div className="main-content">
-        <div className="panel-body">
-          <ComTable tableColumns={tableColumns} tableData={tableData} tableFuncs={tableFuncs}/>
-          {/* <Table 
-            dataSource={tableData} 
-            columns={tableColumns} 
-            bordered={true}
-            loading={false}
-            rowClassName={(record, index) => {return 'row-class'}}
-            rowKey="id"
-            rowSelection={{
-              columnWidth: '50px',
-              fixed: true,
-              type: 'checkbox'
-            }}
-            showHeader={true}
-            size="default"
-            onChange={(pagination, filters, sorter, extra) => {
-              console.log(pagination)
-              console.log(filters)
-              console.log(sorter)
-            }}
-            scroll={{
-              x: 'max-content',
-              scrollToFirstRowOnChange: true
-            }}
-            showSorterTooltip={false}
-            pagination={{
-              position: ['bottomCenter'],
-              current: 1,
-              disabled: false,
-              pageSize: 10,
-              total: 20,
-              showTotal: total => `Total ${total} items`,
-              pageSizeOptions: ['10', '30', '50', '100'],
-              showQuickJumper: true,
-              showSizeChanger: true
-            }}
-          /> */}
-        </div>
-      </div>
-    </div>
+    <Form form={form} component={false}>
+      <ComTable tableColumns={transTableColumns} tableData={tableData} components={tableComponents} tableFuncs={tableFuncs}/>
+    </Form>
   )
 }
 
-export default BasicTable
+export default EditTableLine

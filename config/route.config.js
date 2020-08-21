@@ -85,6 +85,33 @@ export default [
               icon: 'icon-dashboard',
               name: 'tableBasic'
             }
+          },
+          {
+            path: '/home/table/edit',
+            component: './table/edit/index',
+            title: 'UMI-TABLE',
+            meta: {
+              icon: 'icon-dashboard',
+              name: 'tableEdit'
+            }
+          }
+        ]
+      },
+      {
+        path: '/home/chart',
+        meta: {
+          icon: 'icon-dashboard',
+          name: 'chart'
+        },
+        routes: [
+          {
+            path: '/home/chart/flow',
+            component: './chart/flow/index',
+            title: 'UMI-CHART',
+            meta: {
+              icon: 'icon-dashboard',
+              name: 'chartFlow'
+            }
           }
         ]
       }

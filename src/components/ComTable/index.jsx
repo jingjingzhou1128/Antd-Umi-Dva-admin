@@ -41,7 +41,7 @@ function ComTable (props) {
               onShowSizeChange={tableFuncs.handleChangeSize}
               showQuickJumper={tableData.page.showQuickJumper || false}
               showSizeChanger={true}
-              showTotal={tableData.page.showTotal}/>
+              showTotal={tableFuncs.showTotal}/>
           </div>
         )
       }

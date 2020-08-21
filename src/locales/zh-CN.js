@@ -7,5 +7,8 @@ export default {
   'reactFrame.route.formBasic': '基础表单',
   'reactFrame.route.formDynamic': '动态表单',
   'reactFrame.route.table': '表格',
-  'reactFrame.route.tableBasic': '基础表格'
+  'reactFrame.route.tableBasic': '基础表格',
+  'reactFrame.route.tableEdit': '可编辑表格',
+  'reactFrame.route.chart': '图表',
+  'reactFrame.route.chartFlow': '流程图'
 }

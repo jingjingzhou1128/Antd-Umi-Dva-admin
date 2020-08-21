@@ -1,35 +1,44 @@
-import React, {useState, useEffect, useMemo} from 'react'
-import {Dropdown, Menu} from 'antd'
+import React, {useState, useEffect, useRef, useMemo} from 'react'
+import {Dropdown, Menu, Input} from 'antd'
 
-import ajax from '../service'
+import ajax from '../../../service'
 
-import ComBreadcrumb from '@/components/ComBreadcrumb'
 import ComTable from '@/components/ComTable'
 import MyIcon from '@/components/MyIcon'
 
-function BasicTable (props) {
-  /**
-   * @author zhoujingjing
-   * @description 面包屑导航栏
-   */
-  const navData = {
-    separator: '/',
-    list: [
-      {
-        title: '首页',
-        path: '/home/dashboard'
-      },
-      {
-        title: '表格页',
-        path: ''
-      },
-      {
-        title: '基础表格',
-        path: ''
-      }
-    ]
+const EditTableCell = ({editable, children, row, rowIndex,  dataIndex, onSaveCell, ...otherProps}) => {
+  const [isEditing, setEditing] = useState(false)
+
+  const inputRef = useRef(null)
+
+  function toggleEdit () {
+    setEditing(!isEditing)
   }
 
+  function saveValue (e) {
+    toggleEdit()
+    onSaveCell(dataIndex, rowIndex, e.target.value)
+  }
+
+  useEffect(() => {
+    if (inputRef && isEditing) {
+      inputRef.current.focus()
+    }
+  }, [isEditing])
+
+  if (!editable) return <td {...otherProps}>{children}</td>
+  return isEditing ? (
+    <td {...otherProps}>
+      <Input ref={inputRef} defaultValue={row[dataIndex]} onPressEnter={saveValue} onBlur={saveValue}/>
+    </td>
+  ) : (
+    <td {...otherProps}>
+      <div onClick={toggleEdit}>{children}</div>
+    </td>
+  )
+}
+
+function EditTable (props) {
   /**
    * @author zhoujingjing
    * @description 表格数据
@@ -46,21 +55,10 @@ function BasicTable (props) {
     page: {
       current: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
     },
     data: []
   })
-
-  /**
-   * @author zhoujingjing
-   * @description 表格方法
-   */
-  const tableFuncs = {
-    handleChangePage: handleChangePage,
-    handleChangeSize: handleChangeSize,
-    handleChange: handleChange,
-    showTotal: total => `共计${total}项`
-  }
 
   /**
    * @author zhoujingjing
@@ -122,6 +120,47 @@ function BasicTable (props) {
       render: renderTableOperate
     }
   ], [tableParams.name])
+
+  /**
+   * @author zhoujingjing
+   * @description 表格方法
+   */
+  const tableFuncs = {
+    handleChangePage: handleChangePage,
+    handleChangeSize: handleChangeSize,
+    handleChange: handleChange,
+    showTotal: total => `共计${total}项`
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 覆盖表格table元素
+   */
+  const tableComponents = {
+    body: {
+      cell: EditTableCell
+    }
+  }
+
+  /**
+   * @author zhoujingjing
+   * @description 转换列表项，添加单元格属性
+   */
+  const transTableColumns = useMemo(() => {
+    return tableColumns.map(column => {
+      if (!column.editable) return column
+      return {
+        ...column,
+        onCell: (row, rowIndex) => ({
+          row,
+          rowIndex,
+          editable: column.editable,
+          dataIndex: column.dataIndex,
+          onSaveCell: handleSaveCell
+        })
+      }
+    })
+  }, [tableColumns])
 
   /**
    * @author zhoujingjing
@@ -207,7 +246,6 @@ function BasicTable (props) {
       ...cur,
       loading: true
     }))
-    // eslint-disable-next-line compat/compat
     let queryData = Object.assign({pageSize: tableData.page.pageSize, pageNumb: tableData.page.current, ...tableParams}, data)
     ajax.getTableList(queryData).then(res => {
       if (res.data.flag) {
@@ -236,6 +274,21 @@ function BasicTable (props) {
 
   /**
    * @author zhoujingjing
+   * @description 保存修改后的表格值
+   * @param {*} name 
+   * @param {*} rowIndex 
+   * @param {*} value 
+   */
+  function handleSaveCell (name, rowIndex, value) {
+    setTableData(data => {
+      let tmpData = {...data}
+      tmpData.data[rowIndex][name] = value
+      return tmpData
+    })
+  }
+
+  /**
+   * @author zhoujingjing
    * @description 页面挂载生命周期
    */
   useEffect(() => {
@@ -243,51 +296,8 @@ function BasicTable (props) {
   }, [])
 
   return (
-    <div className="main-wrapper">
-      <ComBreadcrumb navData={navData}/>
-      <div className="main-content">
-        <div className="panel-body">
-          <ComTable tableColumns={tableColumns} tableData={tableData} tableFuncs={tableFuncs}/>
-          {/* <Table 
-            dataSource={tableData} 
-            columns={tableColumns} 
-            bordered={true}
-            loading={false}
-            rowClassName={(record, index) => {return 'row-class'}}
-            rowKey="id"
-            rowSelection={{
-              columnWidth: '50px',
-              fixed: true,
-              type: 'checkbox'
-            }}
-            showHeader={true}
-            size="default"
-            onChange={(pagination, filters, sorter, extra) => {
-              console.log(pagination)
-              console.log(filters)
-              console.log(sorter)
-            }}
-            scroll={{
-              x: 'max-content',
-              scrollToFirstRowOnChange: true
-            }}
-            showSorterTooltip={false}
-            pagination={{
-              position: ['bottomCenter'],
-              current: 1,
-              disabled: false,
-              pageSize: 10,
-              total: 20,
-              showTotal: total => `Total ${total} items`,
-              pageSizeOptions: ['10', '30', '50', '100'],
-              showQuickJumper: true,
-              showSizeChanger: true
-            }}
-          /> */}
-        </div>
-      </div>
-    </div>
+    <ComTable tableColumns={transTableColumns} tableData={tableData} components={tableComponents} tableFuncs={tableFuncs}/>
   )
 }
 
-export default BasicTable
+export default EditTable

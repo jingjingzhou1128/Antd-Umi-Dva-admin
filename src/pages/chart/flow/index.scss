@@ -1,0 +1,31 @@
+.flow-container {
+  position: relative;
+}
+.node-tooltip {
+  position: absolute;
+  background-color: #e6fefa;
+  border: 1px solid #65dbd6;
+  padding: 10px;
+  .ant-timeline-item-last > .ant-timeline-item-content {
+    min-height: auto;
+  }
+}
+.tooltip-container {
+  // position: absolute;
+  .tooltip-body {
+    padding: 5px 8px;
+    border: 1px solid #65dbd6;
+    background-color: #fff;
+    .date {
+      font-size: 12px;
+      color: #0000009d;
+    }
+  }
+  .tooltip-bottom {
+    padding: 5px 8px;
+    background: #e6fefa;
+    > li {
+      font-size: 12px;
+    }
+  }
+}

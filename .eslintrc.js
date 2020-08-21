@@ -20,6 +20,7 @@ module.exports = {
     // page: true,
   },
   rules: {
+    "compat/compat":"never",
     // 'no-console': 'off',
     // 'react/jsx-filename-extension': [1, { extensions: ['.js'] }],
     // 'react/jsx-wrap-multilines': 0,
@@ -55,9 +56,9 @@ module.exports = {
     "react-hooks/exhaustive-deps": "warn",
     "no-debugger": process.env.NODE_ENV === 'production' ? 2 : 0
   },
-  // settings: {
+  settings: {
     // support import modules from TypeScript files in JavaScript files
-    // 'import/resolver': { node: { extensions: ['.js', '.ts', '.jsx', '.tsx'] } },
-    // polyfills: ['fetch', 'promises', 'url', 'object-assign'],
-  // },
+    'import/resolver': { node: { extensions: ['.js', '.ts', '.jsx', '.tsx'] } },
+    polyfills: ['fetch', 'promises', 'url', 'object-assign'],
+  },
 };

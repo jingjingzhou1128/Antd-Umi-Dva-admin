@@ -7,7 +7,10 @@ export default {
   'reactFrame.route.formBasic': 'Form Basic',
   'reactFrame.route.formDynamic': 'Form Dynamic',
   'reactFrame.route.table': 'TABLE',
-  'reactFrame.route.tableBasic': 'Table Basic'
+  'reactFrame.route.tableBasic': 'Table Basic',
+  'reactFrame.route.tableEdit': 'Table Edit',
+  'reactFrame.route.chart': 'Chart',
+  'reactFrame.route.chartFlow': 'Flow Chart'
   // reactFrame: {
   //   route: {
   //     dashboard: 'Dashboard',
