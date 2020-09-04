@@ -31,13 +31,13 @@ export default {
         // baseNavigator: true, // 为true时，用navigator.language的值作为默认语言
         antd: true // 是否启用antd的<LocaleProvider />
       },
-      // headScripts: [
-      //   { src: '<%= PUBLIC_PATH %>public/config.js' }
-      // ],
+      headScripts: [
+        { src: '<%= PUBLIC_PATH %>config.js' }
+      ],
     }],
   ],
   routes,
-  history: 'hash',
+  history: 'browser',
   outputPath: './dist',
   base: '/',
   publicPath: '/',
@@ -60,5 +60,11 @@ export default {
       }
     ]  //按需加载antd样式文件
   ],
-  ignoreMomentLocale: true
+  ignoreMomentLocale: true,
+  // proxy: {
+  //   '/api': {
+  //     'target': 'http://127.0.0.1:8000/',
+  //     'changeOrigin': true
+  //   }
+  // }
 }

@@ -54,7 +54,7 @@ function Flow (props) {
 
   const [showEdgeTip, setShowEdgeTip] = useState(false)
 
-  const [dealData, setDealData] = useState({
+  const [dealData] = useState({
     type: '凭证开立',
     amount: '100,000,000,00 元',
     date: '2019-08-03',
@@ -155,7 +155,7 @@ function Flow (props) {
     g6.on('edge:mouseenter', evt => {
       let model = evt.item.getModel()
       let {endPoint} = model
-      let point = g6.getCanvasByPoint(endPoint.x - 160, endPoint.y - 35)
+      let point = g6.getCanvasByPoint(endPoint.x, endPoint.y)
       setEdgeTooltipStyle({left: `${point.x}px`, top: `${point.y}px`})
       setShowEdgeTip(true)
     })

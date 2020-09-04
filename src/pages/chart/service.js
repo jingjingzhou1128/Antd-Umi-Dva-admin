@@ -1,4 +1,5 @@
 import $axios from '@/utils/request'
+const deploy = '/api'
 
 export default {
   /**
@@ -9,7 +10,7 @@ export default {
   getFlowData () {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/chart/flow/data`
+      url: `${deploy}/chart/flow/data`
     }
     return $axios(service, '')
   }

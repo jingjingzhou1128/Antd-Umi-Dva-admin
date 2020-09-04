@@ -207,7 +207,6 @@ function BasicTable (props) {
       ...cur,
       loading: true
     }))
-    // eslint-disable-next-line compat/compat
     let queryData = Object.assign({pageSize: tableData.page.pageSize, pageNumb: tableData.page.current, ...tableParams}, data)
     ajax.getTableList(queryData).then(res => {
       if (res.data.flag) {

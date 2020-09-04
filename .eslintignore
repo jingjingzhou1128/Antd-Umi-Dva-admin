@@ -1,2 +1,4 @@
-/scripts
-/config
+config/*.js
+mock/*.js
+public/*.js
+/node_modules

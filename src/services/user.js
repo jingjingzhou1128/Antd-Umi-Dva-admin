@@ -1,4 +1,5 @@
 import $axios from '@/utils/request'
+const deploy = '/api'
 
 export default {
   /**
@@ -12,7 +13,7 @@ export default {
   login (data) {
     const service = {
       method: 'post',
-      url: `${window.config.baseUrl}/user/login`
+      url: `${deploy}/user/login`
     }
     return $axios(service, data)
   },
@@ -25,7 +26,7 @@ export default {
   isLogin (data) {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/user/isLogin`
+      url: `${deploy}/user/isLogin`
     }
     return $axios(service, data)
   },
@@ -38,7 +39,7 @@ export default {
   getPrmCode (data) {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/user/prmCodeList`
+      url: `${deploy}/user/prmCodeList`
     }
     return $axios(service, data)
   }

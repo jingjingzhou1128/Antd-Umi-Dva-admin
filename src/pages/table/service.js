@@ -1,4 +1,5 @@
 import $axios from '@/utils/request'
+const deploy = '/api'
 
 export default {
   /**
@@ -10,7 +11,7 @@ export default {
   getTableList (data) {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/table/list`
+      url: `${deploy}/table/list`
     }
     return $axios(service, data)
   }

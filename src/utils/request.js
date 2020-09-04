@@ -60,7 +60,7 @@ function error(response) {
 }
 
 function success(res) {
-  if (!res.data.flag && res.config.url !== `${window.config.baseUrl}/user/isLogin`) {
+  if (!res.data.flag && res.config.url.indexOf('/user/isLogin') < 0) {
     window.notificationError({
       msg: 'Error',
       desc: res.data.msg

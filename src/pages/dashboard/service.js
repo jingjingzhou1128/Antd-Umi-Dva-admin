@@ -1,4 +1,5 @@
 import $axios from '@/utils/request'
+const deploy = '/api'
 
 export default {
   /**
@@ -10,7 +11,7 @@ export default {
   getSummaryData (data) {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/ds/summary`
+      url: `${deploy}/ds/summary`
     }
     return $axios(service, data)
   },
@@ -23,7 +24,7 @@ export default {
   getSaleType (data) {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/ds/saleType`
+      url: `${deploy}/ds/saleType`
     }
     return $axios(service, data)
   },
@@ -36,7 +37,7 @@ export default {
   getSearchList (data) {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/ds/searchList`
+      url: `${deploy}/ds/searchList`
     }
     return $axios(service, data)
   },
@@ -49,7 +50,7 @@ export default {
   getSaleTrend (data) {
     const service = {
       method: 'get',
-      url: `${window.config.baseUrl}/ds/saleTrend`
+      url: `${deploy}/ds/saleTrend`
     }
     return $axios(service, data)
   }

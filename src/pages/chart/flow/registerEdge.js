@@ -3,7 +3,6 @@ import {ColorMap} from './dataOptions'
 
 G6.registerEdge('customEdge', {
   draw (cfg, group) {
-    console.log(cfg)
     let startPoint = cfg.startPoint
     let endPoint = cfg.endPoint
     let yDiff = endPoint.y - startPoint.y
@@ -68,7 +67,7 @@ G6.registerEdge('customEdge', {
       }
     })
     // type
-    const type = group.addShape('text', {
+    group.addShape('text', {
       attrs: {
         text: cfg.data.type,
         x: line2StartPoint.x + labelLeftOffset,
@@ -80,7 +79,7 @@ G6.registerEdge('customEdge', {
       }
     })
     // date
-    const date = group.addShape('text', {
+    group.addShape('text', {
       attrs: {
         text: cfg.data.date,
         x: line2StartPoint.x + labelLeftOffset,
